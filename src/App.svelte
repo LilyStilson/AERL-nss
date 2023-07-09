@@ -6,19 +6,12 @@
         Button,
         TextBox
     } from "./lib/ui/AErenderLauncherUI";
+  import TaskEditor from "./pages/TaskEditor.svelte";
 </script>
 
 <main>
     <Center>
-        <StackPanel Orientation="Vertical" Spacing="8px">
-            <Label>This is default font size</Label>
-            <Button>Click me</Button>
-            <StackPanel Orientation="Horizontal" Spacing="4px">
-                <TextBox Hint="Type something here" />
-                <TextBox Text="Predefined text" Height="24px" />
-                <TextBox Text="Predefined multiline text" Multiline={true} Height="auto" />
-            </StackPanel>
-        </StackPanel>
+        <TaskEditor />
     </Center>
 </main>
 
