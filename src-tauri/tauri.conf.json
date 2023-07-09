@@ -14,8 +14,17 @@
         "allowlist": {
             "all": false,
             "shell": {
-                "all": false,
-                "open": true
+                "all": true,
+                "execute": true,
+                "sidecar": true,
+                "open": true,
+                "scope": [
+                    {
+                        "name": "start-aerender",
+                        "cmd": "aerender",
+                        "args": true
+                    }
+                ]
             }
         },
         "bundle": {
