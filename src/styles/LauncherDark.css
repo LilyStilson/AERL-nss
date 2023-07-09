@@ -1,0 +1,15 @@
+:root {
+    --background: #2d2d2d;
+    --text: #fff;
+
+    --surface: #202020;
+    --surface-hover: #404040;
+
+    --border: #151515;
+    --border-hover: #4c4c4c;
+
+    --accent: #2a82e2;
+    --accent-selection: #44759D7F;
+    --accent-pressed: #17579c;
+    --accent-hover: #2c92ff;
+}
