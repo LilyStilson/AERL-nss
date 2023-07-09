@@ -24,6 +24,7 @@
         background-color: var(--surface);
         border: 1px solid;
         border-color: var(--border);
+        transition: border-color var(--transition-time) linear;
     }
     .text-box:hover {
         border-color: var(--border-hover)

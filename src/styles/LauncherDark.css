@@ -3,7 +3,10 @@
     --text: #fff;
 
     --surface: #202020;
+    --surface-panel: #252525;
+    --surface-front: #303030;
     --surface-hover: #404040;
+
 
     --border: #151515;
     --border-hover: #4c4c4c;
@@ -12,4 +15,11 @@
     --accent-selection: #44759D7F;
     --accent-pressed: #17579c;
     --accent-hover: #2c92ff;
+
+    --transition-time-disabled: 0;
+    --transition-time-short: 0.1s;
+    --transition-time-medium: 0.3s;
+    --transition-time-long: 0.5s;
+
+    --transition-time: var(--transition-time-short);
 }

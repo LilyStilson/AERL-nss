@@ -20,6 +20,7 @@
         color: var(--text);
         user-select: none;
         -webkit-user-select: none;
+        transition: background-color var(--transition-time) linear;
     }
     .button:hover {
         background-color: var(--surface-hover);
