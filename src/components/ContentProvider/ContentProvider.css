@@ -1,0 +1,13 @@
+.content-provider {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.cp-header, .cp-footer {
+    flex: 0 1;
+}
+.cp-content {
+    flex: 2 0;
+    margin: 8px 0;
+}

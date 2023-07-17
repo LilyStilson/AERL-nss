@@ -8,23 +8,34 @@
     },
     "package": {
         "productName": "AErender Launcher",
-        "version": "0.9.0"
+        "version": "0.9.0-beta"
     },
     "tauri": {
         "allowlist": {
             "all": false,
+            "window": {
+                "all": false,
+                "close": true,
+                "hide": true,
+                "show": true,
+                "maximize": true,
+                "minimize": true,
+                "unmaximize": true,
+                "unminimize": true,
+                "startDragging": true
+            },
             "shell": {
-                "all": true,
+                "all": false,
                 "execute": true,
-                "sidecar": true,
+                "open": true
+            },
+            "dialog": {
+                "all": false,
+                "ask": true,
+                "confirm": false,
+                "message": true,
                 "open": true,
-                "scope": [
-                    {
-                        "name": "start-aerender",
-                        "cmd": "aerender",
-                        "args": true
-                    }
-                ]
+                "save": true
             }
         },
         "bundle": {
@@ -46,7 +57,9 @@
             {
                 "fullscreen": false,
                 "resizable": true,
+                "decorations": false,
                 "title": "AErender Launcher",
+                "center": true,
                 "width": 960,
                 "height": 540
             }

@@ -1,0 +1,32 @@
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.editor-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 0 8px 0;
+}
+
+.titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+    height: 30px;
+    z-index: 1000;
+}
+
+.menu-item {
+    font-size: 12px;
+}
