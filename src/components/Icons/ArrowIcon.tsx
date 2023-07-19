@@ -1,7 +1,7 @@
 import IVariantIconProps from "./interface/IVariantIconProps";
 import IconBase from "./IconBase";
 
-export default function ExpandIcon(props: IVariantIconProps) {
+export default function ArrowIcon(props: IVariantIconProps) {
     return (
         <IconBase {...props} viewBox="0 0 24 24">
             {   

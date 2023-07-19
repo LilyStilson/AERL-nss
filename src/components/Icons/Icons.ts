@@ -5,7 +5,7 @@ import PlusIcon from "./PlusIcon"
 import MinusIcon from "./MinusIcon"
 import ArrowIcon from "./ArrowIcon"
 import CloseIcon from "./CloseIcon"
-import ExpandIcon from "./ArrowIcon"
+import ExpandIcon from "./ExpandIcon"
 import MinimizeIcon from "./MinimizeIcon"
 
 export {
