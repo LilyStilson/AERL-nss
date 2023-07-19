@@ -1,5 +1,4 @@
 import { OutputModule, RenderSettings, RenderTask } from "../classes/Rendering"
-
 import { useState, useEffect } from "react"
 import { Button, Card, Paper, Select, TextInput, Title, Grid, Stack, Checkbox, Text, Divider } from "@mantine/core"
 import ContentProvider from "../components/ContentProvider/ContentProvider";

@@ -1,17 +1,11 @@
-import { Paper, Title, Button, Card, ActionIcon, Modal } from "@mantine/core";
-import ContentProvider from "../components/ContentProvider/ContentProvider";
-import SettingsIcon from "../components/Icons/SettingsIcon";
-import PlayIcon from "../components/Icons/PlayIcon";
-import QueueIcon from "../components/Icons/QueueIcon";
-import PlusIcon from "../components/Icons/PlusIcon";
-import MinusIcon from "../components/Icons/MinusIcon";
-import { useDisclosure } from "@mantine/hooks";
-import TaskEditor from "./TaskEditor";
-import { Composition, FrameSpan, OutputModule, RenderTask } from "../classes/Rendering";
+import { Paper, Title, Button, Card, ActionIcon, Modal } from "@mantine/core"
+import ContentProvider from "../components/ContentProvider/ContentProvider"
+import { SettingsIcon, PlayIcon, QueueIcon, PlusIcon, MinusIcon, } from "../components/Icons/Icons"
+import { useDisclosure } from "@mantine/hooks"
+import TaskEditor from "./TaskEditor"
+import {  RenderTask } from "../classes/Rendering"
 import { open as openDialog } from "@tauri-apps/api/dialog"
-import { A } from "@tauri-apps/api/path-c062430b";
-import { type } from "os";
-import { useState } from "react";
+import { useState } from "react"
 
 interface IDefaultViewProps {
     callback?: (sender: any) => void;
@@ -33,7 +27,7 @@ export default function MainView(props: IDefaultViewProps) {
                     <Card shadow="sm" style={{ display: "flex", alignItems: "center", padding: "8px" }}>
                         <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Tasks</Title>
                         <div style={{ display: "flex", width: "100%", justifyContent: "right", gap: "0 8px" }}>
-                            <Button variant="default" size="sm" leftIcon={<PlusIcon size={16} respectsTheme />} onClick={ async () => {
+                            <Button variant="default" size="sm" leftIcon={<PlusIcon size={16} filled respectsTheme />} onClick={ async () => {
                                 let project = await openDialog({
                                     multiple: false,
                                     filters: [
@@ -49,7 +43,7 @@ export default function MainView(props: IDefaultViewProps) {
                                     open()
                                 }
                             }}>New Task</Button>
-                            <Button variant="default" size="sm" leftIcon={<MinusIcon size={16} respectsTheme />}>Remove Task</Button>
+                            <Button variant="default" size="sm" leftIcon={<MinusIcon size={16} filled respectsTheme />}>Remove Task</Button>
                         </div>
                     </Card>
                 }
@@ -66,9 +60,9 @@ export default function MainView(props: IDefaultViewProps) {
                 }
                 Footer={
                     <Card shadow="sm" style={{ display: "flex", justifyContent: "center", padding: "8px", gap: "0 8px" }}>
-                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><SettingsIcon size={24} respectsTheme /></Button>
-                        <Button variant="filled" style={{ width: "128px" }} rightIcon={<PlayIcon size={20} color="white" />}>Launch</Button>
-                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><QueueIcon size={24} respectsTheme /></Button>
+                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><SettingsIcon size={24} filled respectsTheme /></Button>
+                        <Button variant="filled" style={{ width: "128px" }} rightIcon={<PlayIcon size={20} filled fillColor="white" />}>Launch</Button>
+                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><QueueIcon size={24} filled respectsTheme /></Button>
                     </Card>
                 }
             />
