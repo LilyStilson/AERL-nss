@@ -1,4 +1,4 @@
-import IDefaultIconsProps from "./IDefaultIconsProps";
+import IDefaultIconsProps from "./interface/IDefaultIconsProps";
 import IconBase from "./IconBase";
 
 export default function QueueIcon(props: IDefaultIconsProps) {

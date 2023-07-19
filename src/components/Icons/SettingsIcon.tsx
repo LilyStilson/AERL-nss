@@ -1,5 +1,5 @@
 import React from "react"
-import IDefaultIconsProps from "./IDefaultIconsProps"
+import IDefaultIconsProps from "./interface/IDefaultIconsProps"
 import IconBase from "./IconBase"
 
 export default function SettingsIcon(props: IDefaultIconsProps) {

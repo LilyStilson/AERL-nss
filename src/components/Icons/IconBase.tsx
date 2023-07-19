@@ -1,5 +1,5 @@
 import { useMantineTheme } from "@mantine/core";
-import IDefaultIconsProps from "./IDefaultIconsProps";
+import IDefaultIconsProps from "./interface/IDefaultIconsProps";
 
 interface IBaseIconProps extends IDefaultIconsProps {
     viewBox: string;
@@ -13,12 +13,23 @@ export default function IconBase(props: IBaseIconProps) {
             width={props.size}
             height={props.size}
             style={props.style}
+            stroke={
+                props.stroked 
+                ? props.respectsTheme && props.stroked
+                    ? theme.colorScheme === "dark"
+                        ? theme.white
+                        : theme.black
+                    : props.strokeColor   
+                : "none"
+            }
             fill={
-                props.respectsTheme 
-                ? theme.colorScheme === "dark" 
-                    ? theme.white 
-                    : theme.black 
-                : props.color
+                props.filled 
+                ? props.respectsTheme
+                    ? theme.colorScheme === "dark" 
+                        ? theme.white 
+                        : theme.black 
+                    : props.fillColor
+                :"none"
             }
             viewBox={props.viewBox}
         >
