@@ -1,4 +1,3 @@
-import React from "react"
 import IDefaultIconsProps from "./interface/IDefaultIconsProps"
 import IconBase from "./IconBase"
 
