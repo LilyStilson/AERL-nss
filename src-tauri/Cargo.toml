@@ -1,0 +1,24 @@
+[package]
+name = "aerender-launcher"
+version = "0.9.0"
+description = "UI wrapper for aerender with various features. Rewritten in Tauri."
+authors = ["Lily Stilson", "Lianella Stilson"]
+license = "Apache-2.0"
+repository = "https://github.com/Night-Sky-Studio/AErender-Launcher"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.4", features = [] }
+
+[dependencies]
+tauri = { version = "1.4", features = [ "window-unminimize", "window-close", "window-start-dragging", "window-maximize", "window-minimize", "window-hide", "window-unmaximize", "window-show", "dialog-save", "dialog-open", "dialog-ask", "dialog-message", "shell-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+window-shadows = "0.2.1"
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
