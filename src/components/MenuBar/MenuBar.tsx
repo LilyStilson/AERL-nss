@@ -96,7 +96,7 @@ export default function MenuBar(props: IMenuBarProps): React.JSX.Element {
      */ 
     function buildMenu(item: IMenuItem, topLevel: boolean = false, dropdown?: React.JSX.Element[]): React.JSX.Element {
         return (
-            <Menu withinPortal position={props.position} trigger="click">
+            <Menu withinPortal position={props.position} disabled={props.disabled} trigger="click">
                 <Menu.Target>
                     {
                         topLevel 

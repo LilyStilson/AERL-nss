@@ -9,7 +9,7 @@ import { CSSProperties, useState } from "react"
 import { Platform, GetPlatform } from "./classes/Helpers/Platform"
 import { Theme } from "./classes/Helpers/Enums";
 
-function App() {
+export default function App() {
     // TS limitations 101
     const colorScheme: Theme = Theme.Dark as Theme
 
@@ -153,5 +153,3 @@ function App() {
         </div>
     )
 }
-
-export default App;
