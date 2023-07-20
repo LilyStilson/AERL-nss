@@ -1,0 +1,35 @@
+name: Suggest a feature
+description: Suggest an idea for this project
+title: "[Request]: "
+labels: ["feature request"]
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What exactly do you want us to add?
+      description: Tell here what you want to see in Launcher.
+      placeholder: "I want to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Describe the solution you'd like"
+      description: A clear description of what change you would like
+      placeholder: "I would like to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Describe alternatives you've considered"
+      description: "A clear and concise description of any alternative solutions or features you've considered."
+
+  - type: textarea
+    id: info
+    attributes:
+      label: Additional information
+      description: Any additional information about your problem
