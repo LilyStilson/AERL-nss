@@ -62,7 +62,7 @@ body:
     id: ae
     attributes:
       label: Adobe After Effects version
-      placeholder: 2022
+      placeholder: "2022"
     validations:
       required: true
 
