@@ -1,0 +1,73 @@
+name: Bug Report
+description: Report a bug
+title: "[Bug]: "
+labels: ["bug", "needs triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Before you file the bug report
+        0. Please, confirm that your issue is related to AErender Launcher
+           Issues related to *Launcher Script*, *Adobe License* or you getting fired becuase you overslept will be closed without resolution
+        1. Please search for any existing issues
+        2. Make sure that you have a supported OS (`Windows 10/11`, `macOS 11+`) and WebView2 Runtime installed
+        3. Finally, don't be mean and demand impossible from developers :)
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of what exactly happened. Please, attach screenshots if possible.
+      placeholder: A bug happened!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Please, describe what you expected to happen.
+    validations:
+      required: true
+      
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A link to a reproduction repo or steps to reproduce the behaviour.
+      placeholder: |
+        Please provide a minimal reproduction or steps to reproduce, see this guide https://stackoverflow.com/help/minimal-reproducible-example
+        Why reproduction is required? see this article https://antfu.me/posts/why-reproductions-are-required
+    validations:
+      required: true
+      
+  - type: input
+    id: os
+    attributes:
+      label: Your Operating System
+      placeholder: Windows 11 Pro 22H2 / macOS Ventura 13.4.1
+    validations:
+      required: true
+
+  - type: input
+    id: launcher
+    attributes:
+      label: AErender Launcher version
+      placeholder: v0.8.9-beta
+    validations:
+      required: true
+
+  - type: input
+    id: ae
+    attributes:
+      label: Adobe After Effects version
+      placeholder: 2022
+    validations:
+      required: true
+
+  - type: textarea
+    id: info
+    attributes:
+      label: Additional information
+      description: Any additional information about your problem
