@@ -16,6 +16,7 @@ export default function App() {
     const ComponentsDefinitions: MantineThemeComponents = {
         Button: { defaultProps: { size: "md" } },
         TextInput: { defaultProps: { size: "md" } },
+        NumberInput: { defaultProps: { size: "md" } },
         Checkbox: { defaultProps: { size: "md" } },
         Text: { defaultProps: { size: "md" } },
         Title: { defaultProps: { color: colorScheme == Theme.Light ? "black" : "white" } },

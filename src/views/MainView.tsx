@@ -6,6 +6,7 @@ import TaskEditor from "./TaskEditor"
 import {  RenderTask } from "../classes/Rendering"
 import { open as openDialog } from "@tauri-apps/api/dialog"
 import { useState } from "react"
+import { EditorSender } from "../classes/Helpers/Enums"
 
 interface IDefaultViewProps {
     callback?: (sender: any) => void;
@@ -14,10 +15,9 @@ interface IDefaultViewProps {
 export default function MainView(props: IDefaultViewProps) {
     const [opened, { open, close }] = useDisclosure(false)
 
+    let [editorSender, setEditorSender] = useState<EditorSender>(EditorSender.TaskCreateButton)
     let [TempRenderTask, setTempRenderTask] = useState(new RenderTask(""))
-
     let [page, setCurrentPage] = useState(0)
-
     let [renderTasks, setRenderTasks] = useState<RenderTask[]>([])
 
     return (
@@ -38,6 +38,7 @@ export default function MainView(props: IDefaultViewProps) {
                                 // TODO Project parsing
 
                                 if (project !== null && typeof(project) === "string") {
+                                    setEditorSender(EditorSender.TaskCreateButton)
                                     setTempRenderTask(new RenderTask(project))
                                     props.callback?.call(null, true)
                                     open()
@@ -71,7 +72,7 @@ export default function MainView(props: IDefaultViewProps) {
                 <Modal.Overlay blur={5} opacity={0.25} />
                 <Modal.Content style={{ overflowY: "unset" }}>
                     <Modal.Body style={{ padding: "0" }}>
-                        <TaskEditor Task={TempRenderTask} Callback={(task, changed) => {
+                        <TaskEditor Task={TempRenderTask} Sender={editorSender} Callback={(task, changed) => {
                             if (task != null && changed) {
                                 // setTempRenderTask(task)
                                 setRenderTasks([...renderTasks, task])
