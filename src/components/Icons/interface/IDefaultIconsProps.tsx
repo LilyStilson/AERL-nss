@@ -1,12 +1,9 @@
-import React from "react"
+import IBaseIconProps from "./IBaseIconProps";
 
-export default interface IDefaultIconsProps {
-    size?: number;
-    filled?: boolean;
-    fillColor?: string;
-    stroked?: boolean;
-    strokeColor?: string;
-    respectsTheme?: boolean;
-    style?: React.CSSProperties;
-    children?: React.ReactNode;
+export default interface IDefaultIconsProps extends IBaseIconProps {
+    filled?: boolean
+    fillColor?: string
+    stroked?: boolean
+    strokeColor?: string
+    respectsTheme?: boolean
 }

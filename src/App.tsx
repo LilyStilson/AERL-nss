@@ -8,6 +8,7 @@ import { CloseIcon, ExpandIcon, MinimizeIcon } from "./components/Icons/Icons"
 import { CSSProperties, useState } from "react"
 import { Platform, GetPlatform } from "./classes/Helpers/Platform"
 import { Theme } from "./classes/Helpers/Enums";
+import { LauncherLogoIcon } from "./components/Icons/Icons"
 
 export default function App() {
     // TS limitations 101
@@ -43,112 +44,113 @@ export default function App() {
                 components: ComponentsDefinitions
             }}>
 
-            <div style={{ display: "flex", width: "100%", flexWrap: "nowrap", flexDirection: "column", margin: "8px" }}>
-                <div style={{ flex: "0 1" }}>
-                    <Card shadow="sm" className="titlebar" data-tauri-drag-region>
-                        <div className="menubar">
-                            <MenuBar variant="subtle" position="bottom-start" disabled={modalOpened} menuItems={[
-                                {
-                                    name: "AErender Launcher",
-                                    appButton: true,
-                                    children: [
-                                        {
-                                            name: "Output Module Editor",
-                                            shortcut: { windows: "Ctrl+O", macos: "Cmd+O" },
-                                        },
-                                        {
-                                            name: "Settings",
-                                            shortcut: { windows: "Ctrl+P", macos: "Cmd+P" },
-                                        },
-                                        {
-                                            name: "About AErender Launcher",
-                                            shortcut: { windows: "F12" },
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: "File",
-                                    children: [
-                                        {
-                                            name: "Recent projects",
-                                            // TODO: temp data to test menu spawning
-                                            children: [{ name: "projjjjjjjjjjjjjjjjjjjj1.aep" }, { name: "prooooooooooooooooooj2.aep" }, { name: "proj33333333333333333333333333333.aep" }]
-                                        },
-                                        {
-                                            name: "Import Configuration",
-                                            shortcut: { windows: "Ctrl+I", macos: "Cmd+I" },
-                                        },
-                                        {
-                                            name: "Export Configuration",
-                                            shortcut: { windows: "Ctrl+E", macos: "Cmd+E" },
-                                        },
-                                        {
-                                            name: "Exit",
-                                            shortcut: { windows: "Alt+F4", macos: "Cmd+Q" },
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: "Tasks",
-                                    children: [
-                                        {
-                                            name: "New Task",
-                                            shortcut: { windows: "Ctrl+N", macos: "Cmd+N" },
-                                        },
-                                        {
-                                            name: "Edit Task",
-                                            shortcut: { windows: "Ctrl+R", macos: "Cmd+R" },
-                                        },
-                                        {
-                                            name: "Duplicate Task",
-                                            shortcut: { windows: "Ctrl+D", macos: "Cmd+D" },
-                                        },
-                                        {
-                                            name: "Delete Task",
-                                            shortcut: { windows: "Delete", macos: "Backspace" },
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: "Help",
-                                    children: [
-                                        {
-                                            name: "Documentation",
-                                            shortcut: { windows: "F1" },
-                                        }
-                                    ]
-                                }
-                            ]} />
-                        </div>
-                        <div className="chrome">
-                            <Button.Group>
-                                <Button variant="subtle" color="blue" onClick={() => {
-                                    appWindow.minimize()
-                                }}>
-                                    <MinimizeIcon size={12} filled respectsTheme />
-                                </Button>
-                                <Button variant="subtle" color="blue" onClick={() => {
-                                    appWindow.toggleMaximize()
-                                }}>
-                                    <ExpandIcon size={12} filled alt={isWindowMaximized} respectsTheme/>
-                                </Button>
-                                <Button variant="subtle" color="red" onClick={() => {
-                                    appWindow.close()
-                                }}>
-                                    <CloseIcon size={14} filled respectsTheme />
-                                </Button>
-                            </Button.Group>
-                        </div>
-                    </Card>
+                <div style={{ display: "flex", width: "100%", flexWrap: "nowrap", flexDirection: "column", margin: "8px" }}>
+                    <div style={{ flex: "0 1" }}>
+                        <Card shadow="sm" className="titlebar" data-tauri-drag-region>
+                            <div className="menubar">
+                                <MenuBar variant="subtle" position="bottom-start" disabled={modalOpened} menuItems={[
+                                    {
+                                        name: "AErender Launcher",
+                                        appButton: true,
+                                        icon: <LauncherLogoIcon size={24} />,
+                                        children: [
+                                            {
+                                                name: "Output Module Editor",
+                                                shortcut: { windows: "Ctrl+O", macos: "Cmd+O" },
+                                            },
+                                            {
+                                                name: "Settings",
+                                                shortcut: { windows: "Ctrl+P", macos: "Cmd+P" },
+                                            },
+                                            {
+                                                name: "About AErender Launcher",
+                                                shortcut: { windows: "F12" },
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: "File",
+                                        children: [
+                                            {
+                                                name: "Recent projects",
+                                                // TODO: temp data to test menu spawning
+                                                children: [{ name: "projjjjjjjjjjjjjjjjjjjj1.aep" }, { name: "prooooooooooooooooooj2.aep" }, { name: "proj33333333333333333333333333333.aep" }]
+                                            },
+                                            {
+                                                name: "Import Configuration",
+                                                shortcut: { windows: "Ctrl+I", macos: "Cmd+I" },
+                                            },
+                                            {
+                                                name: "Export Configuration",
+                                                shortcut: { windows: "Ctrl+E", macos: "Cmd+E" },
+                                            },
+                                            {
+                                                name: "Exit",
+                                                shortcut: { windows: "Alt+F4", macos: "Cmd+Q" },
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: "Tasks",
+                                        children: [
+                                            {
+                                                name: "New Task",
+                                                shortcut: { windows: "Ctrl+N", macos: "Cmd+N" },
+                                            },
+                                            {
+                                                name: "Edit Task",
+                                                shortcut: { windows: "Ctrl+R", macos: "Cmd+R" },
+                                            },
+                                            {
+                                                name: "Duplicate Task",
+                                                shortcut: { windows: "Ctrl+D", macos: "Cmd+D" },
+                                            },
+                                            {
+                                                name: "Delete Task",
+                                                shortcut: { windows: "Delete", macos: "Backspace" },
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: "Help",
+                                        children: [
+                                            {
+                                                name: "Documentation",
+                                                shortcut: { windows: "F1" },
+                                            }
+                                        ]
+                                    }
+                                ]} />
+                            </div>
+                            <div className="chrome">
+                                <Button.Group>
+                                    <Button variant="subtle" color="blue" onClick={() => {
+                                        appWindow.minimize()
+                                    }}>
+                                        <MinimizeIcon size={12} filled respectsTheme />
+                                    </Button>
+                                    <Button variant="subtle" color="blue" onClick={() => {
+                                        appWindow.toggleMaximize()
+                                    }}>
+                                        <ExpandIcon size={12} filled alt={isWindowMaximized} respectsTheme/>
+                                    </Button>
+                                    <Button variant="subtle" color="red" onClick={() => {
+                                        appWindow.close()
+                                    }}>
+                                        <CloseIcon size={14} filled respectsTheme />
+                                    </Button>
+                                </Button.Group>
+                            </div>
+                        </Card>
+                    </div>
+                    <div style={{ flex: "2 0", height: "100%", marginTop: "8px" }}>
+                        <MainView callback={(sender) => {
+                            if (typeof(sender) == "boolean") {
+                                setModalOpened(sender as boolean)
+                            }
+                        }} />
+                    </div>
                 </div>
-                <div style={{ flex: "2 0", height: "100%", marginTop: "8px" }}>
-                    <MainView callback={(sender) => {
-                        if (typeof(sender) == "boolean") {
-                            setModalOpened(sender as boolean)
-                        }
-                    }} />
-                </div>
-            </div>
                 
             </MantineProvider>
         </div>

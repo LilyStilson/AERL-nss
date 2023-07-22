@@ -26,3 +26,8 @@
     height: 30px;
     z-index: 1000;
 }
+.menubar {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
