@@ -1,11 +1,12 @@
-import { OutputModule, RenderSettings, RenderTask } from "../classes/Rendering"
+import { Composition, FrameSpan, OutputModule, RenderSettings, RenderTask } from "../classes/Rendering"
 import { useState, useEffect } from "react"
-import { Button, Card, Paper, Select, TextInput, Title, Grid, Stack, Checkbox, Text, Divider, Center, NumberInput, Group } from "@mantine/core"
+import { Button, Card, Paper, Select, TextInput, Title, Grid, Stack, Checkbox, Text, Divider, Center, NumberInput, Group, ScrollArea, Slider } from "@mantine/core"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
 import { save } from "@tauri-apps/api/dialog"
 import Pager from "../components/Pager/Pager"
 import { EditorSender } from "../classes/Helpers/Enums"
-
+import PlusIcon from "../components/Icons/PlusIcon"
+import { tryParseNumber } from "../classes/Helpers/Functions"
 
 interface ITaskEditorProps {
     Sender: string
@@ -16,11 +17,8 @@ interface ITaskEditorProps {
 export default function TaskEditor(props: ITaskEditorProps) {
     let [task, setTask] = useState(props.Task)
 
-    useEffect(() => {
-        console.log(task)
-    }, [task])
-
     let [page, setPage] = useState(0)
+    let [compList, setCompList] = useState<Composition[]>([])
 
     let outputModules: OutputModule[] = [
         OutputModule.Default.Lossless,
@@ -36,9 +34,26 @@ export default function TaskEditor(props: ITaskEditorProps) {
     ])
     
     let [CustomPropsEnabled, setCustomPropsEnabled] = useState(task.CustomProperties !== "")
+    let [cacheLimitText, setCacheLimitText] = useState(`${task.CacheLimit}%`)
+    let [memLimitText, setMemLimitText] = useState(`${task.MemoryLimit} MB`)
+
+    // useEffect(() => {
+    //     console.log(task)
+    //     console.log(compList)
+    // }, [task, compList])
+
+    const AddCompButton = (
+        <div className="row">
+            <Button fullWidth leftIcon={<PlusIcon filled fillColor="white" size={20}/>} onClick={() => {
+                setCompList((current) => [...current, new Composition("New comp", new FrameSpan(0, 100), 1)])
+            }}>
+                <Center>Add comp</Center>
+            </Button>
+        </div>
+    )
 
     return (
-        <Card style={{ display: "flex", width: "640px", height: "420px", padding: "0", boxShadow: "0px 8px 48px 0px rgba(0,0,0,0.5)" }}>
+        <Card style={{ display: "flex", width: "640px", height: "480px", padding: "0", boxShadow: "0px 8px 48px 0px rgba(0,0,0,0.5)" }}>
             <Pager page={page}>
                 <ContentProvider style={{ width: "100%", padding: "8px" }} 
                     Header={
@@ -69,6 +84,7 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     }
                                 }}>Choose file...</Button>
                             </div>
+                            
                             <div className="row">
                                 <Text style={{ width: "96px" }}>Output module</Text>
                                 <Select style={{ flex: "1 0", marginLeft: "8px" }} data={outputModules.map((m) => m.Module)} value={task.OutputModule.Module} onChange={
@@ -82,6 +98,7 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     }
                                 }/>
                             </div> 
+                            
                             <div className="row">
                                 <Text style={{ width: "96px" }}>Render settings</Text>
                                 <Select style={{ flex: "1 0", marginLeft: "8px" }} searchable creatable data={renderSettings} value={task.RenderSettings}
@@ -100,9 +117,9 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                         setTask((current) => { return { ...current, RenderSettings: item } })
                                         return item;
                                     }} />
-                            </div> 
+                            </div>
 
-                            <Card style={{ padding: "8px", height: "auto" }}>
+                            <Card style={{ padding: "8px", marginBottom: "8px", height: "auto" }}>
                                 <Text size="md">Properties</Text>
                                 <Divider my="sm" />
                                 <Grid columns={2}>
@@ -127,10 +144,64 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                             })}/>
                                         </Stack>
                                     </Grid.Col>
-                                </Grid>
-                                
+                                </Grid>                               
                             </Card>
+
+                            <div className="row">
+                                <Text style={{ width: "96px" }}>Cache limit</Text>
+                                <Slider style={{ flex: "1 0", marginLeft: "8px" }} value={task.CacheLimit} onChange={(value) => {
+                                    setCacheLimitText(`${value}%`)
+                                    setTask((current) => {
+                                        return { ...current, CacheLimit: value }
+                                    })
+                                }} />
+                                <TextInput value={cacheLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setCacheLimitText(event.target.value)} onKeyDown={(event) => {
+                                    console.log(event)
+                                    if (event.key == "Enter") {
+                                        setCacheLimitText(`${event.target.value}%`)
+                                        setTask((current) => {
+                                            return { ...current, CacheLimit: tryParseNumber(event.target.value) ?? 0 }
+                                        })
+                                    }
+                                }} />
+                            </div>
+
+                            <div className="row" style={{margin: "0"}}>
+                                <Text style={{ width: "96px" }}>Memory limit</Text>
+                                <Slider style={{ flex: "1 0", marginLeft: "8px" }} value={task.MemoryLimit} onChange={(value) => {
+                                    setMemLimitText(`${value}%`)
+                                    setTask((current) => {
+                                        return { ...current, MemoryLimit: value }
+                                    })
+                                }} />
+                                <TextInput value={memLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setMemLimitText(event.target.value)} onKeyDown={(event) => {
+                                    if (event.key == "Enter") {
+                                        let current: string = event.target.value
+                                        let currentNum: number //TODO: find out how much memory a pc has 
+
+                                        if (current.toLowerCase().endsWith("mb")) {
+                                            currentNum = tryParseNumber(current.substring(0, current.length - 2)) ?? currentNum
+                                        }
+
+                                        if (current.toLowerCase().endsWith("gb")) {
+                                            current = current.substring(0, current.length - 2)
+                                            current = `${parseInt(current) * 1024}`
+                                        }
+
+                                        if (current.toLowerCase().endsWith("kb")) {
+                                            current = current.substring(0, current.length - 2)
+                                            current = `${parseInt(current) / 1024}`
+                                        }
+
+                                        setMemLimitText(`${event.target.value}%`)
+                                        setTask((current) => {
+                                            return { ...current, MemoryLimit: tryParseNumber(event.target.value) ?? 0 }
+                                        })
+                                    }
+                                }} />
+                            </div>
                         </Paper>
+                        
                     }
                     Footer={
                         <Paper shadow="sm" style={{ display: "flex", justifyContent: "space-between", padding: "8px" }}>
@@ -147,14 +218,68 @@ export default function TaskEditor(props: ITaskEditorProps) {
                     Header={
                         <Paper shadow="sm" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px" }}>
                             <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Compositions</Title>
-                            <NumberInput startValue={1} min={1} />
+                            {/* <NumberInput startValue={1} min={1} value={1} /> */}
                         </Paper>
                     }
                     Content={
-                        <Paper shadow="sm" style={{ padding: "8px", height: "100%" }}>
-                            <Center>
-                                Lol
-                            </Center>
+                        <Paper shadow="sm" style={{ padding: "8px", height: "100%", overflowY: "scroll" }}>
+                            <ScrollArea>
+                            { 
+                                compList.length > 0 ? compList.map((comp, idx) => {
+                                    let result: React.JSX.Element[] = []
+
+                                    result.push(
+                                        <div className="row">
+                                            <Card style={{ width: "100%", display: "flex", justifyContent: "space-between", padding: "8px" }}>
+                                                <div className="flex-row">
+                                                    {/* <Text style={{ marginRight: "8px" }}>Name: </Text> */}
+                                                    <TextInput label="Name:" value={comp.Name} onChange={(event) => {
+                                                        setCompList((current) => {
+                                                            let result = [...current]
+                                                            result[idx].Name = event.target.value ?? ""
+                                                            return result
+                                                        })
+                                                    }} />
+                                                </div>
+                                                <div className="flex-row">
+                                                    <TextInput label="Start frame:" value={comp.Frames.StartFrame} onChange={(event) => {
+                                                        setCompList((current) => {
+                                                            let result = [...current]
+                                                            result[idx].Frames.StartFrame = tryParseNumber(event.target.value) ?? result[idx].Frames.StartFrame
+                                                            return result
+                                                        })
+                                                    }} />
+                                                    <TextInput label="End frame:" value={comp.Frames.EndFrame} onChange={(event) => {
+                                                        setCompList((current) => {
+                                                            let result = [...current]
+                                                            result[idx].Frames.EndFrame = tryParseNumber(event.target.value) ?? result[idx].Frames.EndFrame
+                                                            return result
+                                                        })
+                                                    }} />
+                                                </div>
+                                                <div className="flex-row">
+                                                    <NumberInput label="Split" min={1} value={comp.Split} onChange={(value) => {
+                                                        setCompList((current) => {
+                                                            let result = [...current]
+                                                            result[idx].Split = parseInt(`${value}`) ?? 1
+                                                            return result
+                                                        })
+                                                    }} />
+
+                                                </div>
+                                            </Card>
+                                        </div>
+                                    )
+
+                                    if (idx == compList.length - 1)
+                                        result.push(
+                                            AddCompButton
+                                        )
+
+                                    return result
+                                }) : AddCompButton
+                            }
+                            </ScrollArea>
                         </Paper>
                     }
                     Footer={
@@ -168,7 +293,8 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                 }}>{"<<"}Project setup</Button>
                             </Group>
                             <Button variant="filled" onClick={() => {
-                                props.Callback?.call(null, task, true)
+                                //? workaround?
+                                props.Callback?.call(null, { ...task, Compositions: compList }, true)
                             }}>{props.Sender == EditorSender.TaskCreateButton ? "Create task" : "Save task"}</Button>
                         </Paper>
                     }

@@ -17,7 +17,6 @@
     align-items: center;
     margin: 0 0 8px 0;
 }
-
 .titlebar {
     display: flex;
     align-items: center;
@@ -29,5 +28,9 @@
 .menubar {
     display: flex;
     justify-content: start;
+    align-items: center;
+}
+.flex-row {
+    display: flex;
     align-items: center;
 }

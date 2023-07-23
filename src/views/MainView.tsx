@@ -5,8 +5,9 @@ import { useDisclosure } from "@mantine/hooks"
 import TaskEditor from "./TaskEditor"
 import {  RenderTask } from "../classes/Rendering"
 import { open as openDialog } from "@tauri-apps/api/dialog"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EditorSender } from "../classes/Helpers/Enums"
+import settings from "../classes/Settings"
 
 interface IDefaultViewProps {
     callback?: (sender: any) => void;
@@ -20,6 +21,10 @@ export default function MainView(props: IDefaultViewProps) {
     let [page, setCurrentPage] = useState(0)
     let [renderTasks, setRenderTasks] = useState<RenderTask[]>([])
 
+    useEffect(() => {
+        console.log(renderTasks)
+    }, [renderTasks])
+
     return (
         <>
             <ContentProvider
@@ -27,6 +32,14 @@ export default function MainView(props: IDefaultViewProps) {
                     <Card shadow="sm" style={{ display: "flex", alignItems: "center", padding: "8px" }}>
                         <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Tasks</Title>
                         <div style={{ display: "flex", width: "100%", justifyContent: "right", gap: "0 8px" }}>
+                            <Button variant="default" size="sm" onClick={async () => {
+                                await settings.init()
+                                if (!settings.isLoaded) 
+                                    if (!await settings.tryLoad()) 
+                                        if (!await settings.tryLoadLegacy())
+                                            await settings.reset()
+                                console.log(settings)
+                            }}>Load settings</Button>
                             <Button variant="default" size="sm" leftIcon={<PlusIcon size={16} filled respectsTheme />} onClick={ async () => {
                                 let project = await openDialog({
                                     multiple: false,

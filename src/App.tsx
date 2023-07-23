@@ -5,10 +5,11 @@ import { appWindow } from '@tauri-apps/api/window'
 import MainView from "./views/MainView"
 import MenuBar from "./components/MenuBar/MenuBar"
 import { CloseIcon, ExpandIcon, MinimizeIcon } from "./components/Icons/Icons"
-import { CSSProperties, useState } from "react"
+import { CSSProperties, useEffect, useState } from "react"
 import { Platform, GetPlatform } from "./classes/Helpers/Platform"
 import { Theme } from "./classes/Helpers/Enums";
 import { LauncherLogoIcon } from "./components/Icons/Icons"
+import settings from "./classes/Settings"
 
 export default function App() {
     // TS limitations 101
@@ -24,6 +25,7 @@ export default function App() {
         Select: { defaultProps: { size: "md", } },
         Card: { defaultProps: { withBorder: colorScheme == Theme.Light } },
         Paper: { defaultProps: { withBorder: colorScheme == Theme.Light } },
+        Slider: { defaultProps: { size: "md" } },
     }
 
     const MenuButtonStyle: CSSProperties = {
@@ -36,6 +38,18 @@ export default function App() {
     appWindow.onResized(async () => {
         setIsWindowMaximized(await appWindow.isMaximized())
     })
+
+    useEffect(() => {
+        (async () => {
+            await settings.init()
+            if (!settings.isLoaded) 
+                if (!await settings.tryLoad()) 
+                    if (!await settings.tryLoadLegacy())
+                        await settings.reset()
+            
+            console.log(settings)
+        })()
+    }, [])
     
     return (
         <div className="app-container">
@@ -87,6 +101,7 @@ export default function App() {
                                             {
                                                 name: "Exit",
                                                 shortcut: { windows: "Alt+F4", macos: "Cmd+Q" },
+                                                onClick: () => appWindow.close()
                                             }
                                         ]
                                     },
