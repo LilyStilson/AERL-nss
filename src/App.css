@@ -17,7 +17,6 @@
     align-items: center;
     margin: 0 0 8px 0;
 }
-
 .titlebar {
     display: flex;
     align-items: center;
@@ -25,4 +24,13 @@
     padding: 0px;
     height: 30px;
     z-index: 1000;
+}
+.menubar {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.flex-row {
+    display: flex;
+    align-items: center;
 }

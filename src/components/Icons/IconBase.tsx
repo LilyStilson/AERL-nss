@@ -1,11 +1,22 @@
 import { useMantineTheme } from "@mantine/core";
+import IBaseIconProps from "./interface/IBaseIconProps";
 import IDefaultIconsProps from "./interface/IDefaultIconsProps";
 
-interface IBaseIconProps extends IDefaultIconsProps {
-    viewBox: string;
+export function SvgBase(props: IBaseIconProps): React.JSX.Element {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={props.size}
+            height={props.size}
+            style={props.style}
+            viewBox={props.viewBox}
+        >
+            {props.children}
+        </svg>
+    )
 }
 
-export default function IconBase(props: IBaseIconProps) {
+export default function IconBase(props: IDefaultIconsProps) {
     const theme = useMantineTheme()
     return (
         <svg

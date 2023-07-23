@@ -6,4 +6,6 @@ export default class RenderSettings {
         DraftSettings        : "Draft Settings",
         MultiMachineSettings : "Multi-Machine Settings"
     }
+
+    static GeneratedDefault: string[] = Object.keys(this.Default).map((_, idx) => Object.values(this.Default)[idx])
 }

@@ -6,6 +6,7 @@ import { Theme } from "../../classes/Helpers/Enums";
 import { isNullOrEmpty } from "../../classes/Helpers/Functions";
 import { GetPlatform, Platform } from "../../classes/Helpers/Platform";
 import { ArrowIcon } from "../Icons/Icons";
+import "./MenuBar.css"
 
 interface IShortcut {
     windows: string
@@ -15,6 +16,7 @@ interface IShortcut {
 interface IMenuItem {
     name: string
     key?: string
+    icon?: React.JSX.Element
     appButton?: boolean
     disabled?: boolean
     shortcut?: IShortcut
@@ -57,7 +59,7 @@ function ShortcutProps(props?: IShortcut): { accessKey: string, rightSection: Re
             : props.macos !== undefined
                 ? props.macos
                 : props.windows,
-        rightSection: Shortcut(props.windows, props.macos)
+        rightSection: [<div className="menu-item-shortcut">{Shortcut(props.windows, props.macos)}</div>]
     }
 }
 
@@ -102,7 +104,7 @@ export default function MenuBar(props: IMenuBarProps): React.JSX.Element {
                         topLevel 
                         // Top level menu items are just buttons
                         ? item.appButton 
-                            ? <Button variant={props.variant} style={{...MenuButtonStyle, fontWeight: "bold", fontSize: "14px"}}>{item.name}</Button>
+                            ? <Button variant={props.variant} leftIcon={item.icon} style={{...MenuButtonStyle, fontWeight: "bold", fontSize: "14px"}}>{item.name}</Button>
                             : <Button variant={props.variant} style={MenuButtonStyle}>{item.name}</Button>
                         // Anything else could be another menu item
                         : <Menu withinPortal position="right-start" trigger="hover">

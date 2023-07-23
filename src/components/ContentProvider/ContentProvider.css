@@ -9,5 +9,6 @@
 }
 .cp-content {
     flex: 2 0;
+    height: 0;
     margin: 8px 0;
 }

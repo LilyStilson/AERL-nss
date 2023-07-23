@@ -7,6 +7,8 @@ import ArrowIcon from "./ArrowIcon"
 import CloseIcon from "./CloseIcon"
 import ExpandIcon from "./ExpandIcon"
 import MinimizeIcon from "./MinimizeIcon"
+import GripIcon from "./GripIcon"
+import LauncherLogoIcon from "./LauncherLogoIcon"
 
 export {
     ArrowIcon,
@@ -17,5 +19,7 @@ export {
     PlayIcon,
     QueueIcon,
     PlusIcon,
-    MinusIcon
+    MinusIcon,
+    GripIcon,
+    LauncherLogoIcon
 }
