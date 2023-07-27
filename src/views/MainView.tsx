@@ -22,8 +22,9 @@ export default function MainView(props: IDefaultViewProps) {
     let [renderTasks, setRenderTasks] = useState<RenderTask[]>([])
 
     useEffect(() => {
-        console.log(renderTasks)
-    }, [renderTasks])
+        console.log("tasks:", renderTasks)
+        console.log("settings:", settings)
+    }, [renderTasks, settings])
 
     return (
         <>
@@ -54,6 +55,7 @@ export default function MainView(props: IDefaultViewProps) {
                                     setEditorSender(EditorSender.TaskCreateButton)
                                     setTempRenderTask(new RenderTask(project))
                                     props.callback?.call(null, true)
+                                    settings.Current.LastProjectPath = project
                                     open()
                                 }
                             }}>New Task</Button>
@@ -64,11 +66,13 @@ export default function MainView(props: IDefaultViewProps) {
                 Content={
                     <Card shadow="sm" style={{ padding: "8px", height: "100%" }}>
                         <>
-                            { renderTasks.map((task) => (<>
-                                <Paper shadow="sm" style={{ padding: "8px", marginBottom: "8px" }}>
-                                    <Title order={5} style={{ marginLeft: "8px" }}>{task.Project}</Title>
-                                </Paper>
-                            </>)) }
+                            { 
+                                renderTasks.map((task) => (
+                                    <Paper key={task.Project} shadow="sm" style={{ padding: "8px", marginBottom: "8px" }}>
+                                        <Title order={5} style={{ marginLeft: "8px" }}>{task.Project}</Title>
+                                    </Paper>
+                                )) 
+                            }
                         </>
                     </Card>
                 }
