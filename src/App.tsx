@@ -28,12 +28,9 @@ export default function App() {
         Slider: { defaultProps: { size: "md" } },
     }
 
-    const MenuButtonStyle: CSSProperties = {
-        color: colorScheme == Theme.Light ? "black" : "white",
-    }
-
     let [isWindowMaximized, setIsWindowMaximized] = useState(false);
     let [modalOpened, setModalOpened] = useState(false);
+    let [recentProjects, setRecentProjects] = useState<string[]>([])
 
     appWindow.onResized(async () => {
         setIsWindowMaximized(await appWindow.isMaximized())
@@ -47,8 +44,14 @@ export default function App() {
                     if (!await settings.tryLoadLegacy())
                         await settings.reset()
             
+            setRecentProjects(settings.Current.RecentProjects)
+        
             console.log(settings)
         })()
+
+        return () => {
+            settings.save()
+        }
     }, [])
     
     return (
@@ -88,7 +91,7 @@ export default function App() {
                                             {
                                                 name: "Recent projects",
                                                 // TODO: temp data to test menu spawning
-                                                children: [{ name: "projjjjjjjjjjjjjjjjjjjj1.aep" }, { name: "prooooooooooooooooooj2.aep" }, { name: "proj33333333333333333333333333333.aep" }]
+                                                children: recentProjects.map((project) => { return { name: project } })
                                             },
                                             {
                                                 name: "Import Configuration",

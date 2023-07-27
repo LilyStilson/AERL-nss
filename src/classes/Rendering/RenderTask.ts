@@ -1,20 +1,21 @@
 import OutputModule from "./OutputModule"
 import RenderSettings from "./RenderSettings"
 import Composition from "./Composition"
+import settings from "../Settings"
 
 export default class RenderTask {
     Project: string = ""
-    Output: string = ""
-    OutputModule: OutputModule = OutputModule.Default.Lossless
-    RenderSettings: string = RenderSettings.Default.BestSettings
+    Output: string = settings.Current.LastOutputPath
+    OutputModule: OutputModule = settings.Current.OutputModules.Modules[settings.Current.OutputModules.Selected]
+    RenderSettings: string = settings.Current.RenderSettings
 
-    MissingFiles: boolean = false
-    Sound: boolean = true
-    Multiprocessing: boolean = false
-    CustomProperties: string = ""
+    MissingFiles: boolean = settings.Current.MissingFiles
+    Sound: boolean = settings.Current.Sound
+    Multiprocessing: boolean = settings.Current.Multithreaded
+    CustomProperties: string = settings.Current.CustomProperties
 
-    CacheLimit: number = 100
-    MemoryLimit: number = 100
+    CacheLimit: number = settings.Current.CacheLimit
+    MemoryLimit: number = settings.Current.MemoryLimit
 
     Compositions: Array<Composition> = []
 
