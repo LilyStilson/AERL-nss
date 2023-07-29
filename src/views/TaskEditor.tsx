@@ -12,13 +12,13 @@ import MinusIcon from "../components/Icons/MinusIcon"
 import { invoke } from "@tauri-apps/api"
 
 interface ITaskEditorProps {
-    Sender: string
-    Task: RenderTask
-    Callback?: (Task: RenderTask, Changed: boolean) => void
+    sender: string
+    task: RenderTask
+    callback?: (task?: RenderTask) => void
 }
 
 export default function TaskEditor(props: ITaskEditorProps) {
-    let [task, setTask] = useState(props.Task)
+    let [task, setTask] = useState(props.task)
 
     let [page, setPage] = useState(0)
     let [compList, setCompList] = useState<Composition[]>([])
@@ -68,17 +68,17 @@ export default function TaskEditor(props: ITaskEditorProps) {
     )
 
     return (
-        <Card style={{ display: "flex", width: "640px", height: "480px", padding: "0", boxShadow: "0px 8px 48px 0px rgba(0,0,0,0.5)" }}>
+        <Card className="popup">
             <Pager page={page}>
                 <ContentProvider style={{ width: "100%", padding: "8px" }} 
                     Header={
-                        <Paper shadow="sm" style={{ display: "flex", alignItems: "center", padding: "8px" }}>
-                            <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Project Setup</Title>
+                        <Paper className="paper">
+                            <Title order={4} className="title">Project Setup</Title>
                             <TextInput value={task.Project} style={{ flex: "1 0", marginLeft: "32px" }} readOnly />
                         </Paper>
                     }
                     Content={
-                        <Paper shadow="sm" style={{ padding: "8px" }}>
+                        <Paper className="content">
                             {/* Output path */}
                             <div className="row">
                                 <Text style={{ width: "96px" }}>Output path</Text>
@@ -234,12 +234,11 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                 }} />
                             </div>
                         </Paper>
-                        
                     }
                     Footer={
-                        <Paper shadow="sm" style={{ display: "flex", justifyContent: "space-between", padding: "8px" }}>
+                        <Paper className="paper">
                             <Button variant="default" onClick={() => {
-                                props.Callback?.call(null, task, false)
+                                props.callback?.call(null, undefined)
                             }}>Cancel</Button>
                             <Button variant="outline" onClick={async () => {
                                 // TODO: IS ALIVE, ALIVEEE!
@@ -255,14 +254,14 @@ export default function TaskEditor(props: ITaskEditorProps) {
                 />
                 <ContentProvider style={{ width: "100%", padding: "8px" }} 
                     Header={
-                        <Paper shadow="sm" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px" }}>
-                            <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Compositions</Title>
+                        <Paper className="paper">
+                            <Title order={4} className="title">Compositions</Title>
                             {/* <NumberInput startValue={1} min={1} value={1} /> */}
                         </Paper>
                     }
                     Content={
-                        <Paper shadow="sm" style={{ padding: "8px", height: "100%", overflowY: "scroll" }}>
-                            <ScrollArea>
+                        <Paper className="content-fixed">
+                            <ScrollArea style={{ height: "100%" }}>
                             { 
                                 compList.length > 0 ? compList.map((comp, idx) => {
                                     let result: React.JSX.Element[] = []
@@ -325,10 +324,10 @@ export default function TaskEditor(props: ITaskEditorProps) {
                         </Paper>
                     }
                     Footer={
-                        <Paper shadow="sm" style={{ display: "flex", justifyContent: "space-between", padding: "8px" }}>
+                        <Paper className="paper">
                             <Group>
                                 <Button variant="default" onClick={() => {
-                                    props.Callback?.call(null, task, false)
+                                    props.callback?.call(null, undefined)
                                 }}>Cancel</Button>
                                 <Button variant="outline" onClick={() => {
                                     setPage(0)
@@ -336,8 +335,8 @@ export default function TaskEditor(props: ITaskEditorProps) {
                             </Group>
                             <Button variant="filled" onClick={() => {
                                 //? workaround?
-                                props.Callback?.call(null, { ...task, Compositions: compList }, true)
-                            }}>{props.Sender == EditorSender.TaskCreateButton ? "Create task" : "Save task"}</Button>
+                                props.callback?.call(null, { ...task, Compositions: compList })
+                            }}>{props.sender == EditorSender.TaskCreateButton ? "Create task" : "Save task"}</Button>
                         </Paper>
                     }
                 />
