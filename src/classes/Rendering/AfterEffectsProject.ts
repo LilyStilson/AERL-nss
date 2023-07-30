@@ -1,7 +1,7 @@
 export default interface IAfterEffectsProject {
-    footage_dimensions: Array<number>[2]
-    footage_frameRate: number
-    framerate: number
+    footage_dimensions: number[]
+    footage_framerate: number
+    frames: number[]
     name: string
-    background_color: Array<number>[3]
+    background_color: number[]
 }
