@@ -1,0 +1,30 @@
+.splitter-wrapper {
+    position: relative;
+    width: inherit;
+    height: inherit;
+}
+.splitter {
+    position: absolute;
+    cursor: col-resize;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.splitter {
+    height: 100%;
+    width: 10px;
+}
+.left-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+.right-pane {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}

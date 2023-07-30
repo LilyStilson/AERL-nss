@@ -3,6 +3,7 @@ import FrameSpan from "./Rendering/FrameSpan"
 import OutputModule from "./Rendering/OutputModule"
 import RenderSettings from "./Rendering/RenderSettings"
 import RenderTask from "./Rendering/RenderTask"
+import IAfterEffectsProject from "./Rendering/AfterEffectsProject"
 
 export {
     Composition,
@@ -10,4 +11,5 @@ export {
     OutputModule,
     RenderSettings,
     RenderTask,
+    type IAfterEffectsProject
 }
