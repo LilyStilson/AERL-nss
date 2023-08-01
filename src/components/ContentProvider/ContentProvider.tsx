@@ -5,6 +5,7 @@ interface IContentProviderProps {
     Header?: React.JSX.Element;
     Content?: React.JSX.Element;
     Footer?: React.JSX.Element;
+    paddingEnabled?: boolean
     style?: CSSProperties;
 }
 
@@ -19,7 +20,7 @@ export default function ContentProvider(props: IContentProviderProps) {
             }
             {   props.Content != null &&
 
-                <div className="cp-content">
+                <div className="cp-content" style={{ margin: props.paddingEnabled ?? true ? "8px 0" : "0" }}>
                     {props.Content}
                 </div>
             }

@@ -1,10 +1,9 @@
-import React, { useState } from "react"
+import React, { createRef, useImperativeHandle, useRef, useState } from "react"
 import { IAfterEffectsProject, RenderTask, Composition, FrameSpan } from "../classes/Rendering"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
 import { Card, Paper, Title, TextInput, Button, Text, Divider, ColorSwatch } from "@mantine/core"
 import SplitView from "../components/SplitView/SplitView"
-import ListBox from "../components/ListBox/ListBox"
-
+import ListBox, { IListBoxProps, TListBoxSelectionHandle } from "../components/ListBox/ListBox"
 
 interface IImportViewProps {
     path: string
@@ -22,6 +21,7 @@ export default function ImportView(props: IImportViewProps): React.JSX.Element {
         backgroundColor: ""
     })
     let [checkedComps, setCheckedComps] = useState<IAfterEffectsProject[]>([])
+    let listBoxRef = useRef<TListBoxSelectionHandle>(null)
 
     return (
         <Card className="popup">
@@ -37,28 +37,42 @@ export default function ImportView(props: IImportViewProps): React.JSX.Element {
                         <SplitView splitterPos="60%" style={{ height: "100%" }} 
                             leftPane={
                                 <Card shadow="sm" style={{ padding: "8px", height: "100%", display: "flex", flexDirection: "column" }}>
-                                    <div style={{ flexShrink: "1" }}>
-                                        <Text size="md">Compositions</Text>
-                                        <Divider my="sm" />
-                                    </div>
-                                    {/* <Paper> */}
-                                        <ListBox items={props.project.map((item) => item.name)} style={{ flexGrow: "1" }} checkboxEnabled 
-                                            onSelectionChange={(index) => {
-                                                let comp = props.project[index]
-                                                setTextObj({
-                                                    name: comp.name,
-                                                    resolution: `${comp.footage_dimensions[0]}x${comp.footage_dimensions[1]}`,
-                                                    framerate: `${comp.footage_framerate}`,
-                                                    startFrame: `${comp.frames[0]}`,
-                                                    endFrame: `${comp.frames[1]}`,
-                                                    backgroundColor: `rgb(${comp.background_color.join(", ")})`
-                                                })
-                                            }}
-                                            onCheckedChange={(checked) => {
-                                                setCheckedComps(checked.map((index) => props.project[index]))
-                                            }}
-                                        />
-                                    {/* </Paper> */}
+                                    <ContentProvider style={{ height: "inherit" }} 
+                                        Header={
+                                            <div>
+                                                <Text size="md">Compositions</Text>
+                                                <Divider my="xs" style={{ margin: "8px 0 0 0"}} />
+                                            </div>
+                                        }
+                                        Content={
+                                            <ListBox ref={listBoxRef} items={props.project.map((item) => item.name)} checkboxEnabled 
+                                                onSelectionChange={(index) => {
+                                                    let comp = props.project[index]
+                                                    setTextObj({
+                                                        name: comp.name,
+                                                        resolution: `${comp.footage_dimensions[0]}x${comp.footage_dimensions[1]}`,
+                                                        framerate: `${comp.footage_framerate}`,
+                                                        startFrame: `${comp.frames[0]}`,
+                                                        endFrame: `${comp.frames[1]}`,
+                                                        backgroundColor: `rgb(${comp.background_color.join(", ")})`
+                                                    })
+                                                }}
+                                                onCheckedChange={(checked) => {
+                                                    setCheckedComps(checked.map((index) => props.project[index]))
+                                                }}
+                                            />
+                                        }
+                                        Footer={
+                                            <div className="flex-stretch">
+                                                <Button variant="default" size="sm" onClick={() => {
+                                                    listBoxRef.current?.selectAll()
+                                                }}>Select all</Button>
+                                                <Button variant="default" size="sm" onClick={() => {
+                                                    listBoxRef.current?.deselectAll()
+                                                }}>Deselect all</Button>
+                                            </div>
+                                        }
+                                    />
                                 </Card>
                             }
                             rightPane={

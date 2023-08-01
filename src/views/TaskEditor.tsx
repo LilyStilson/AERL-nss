@@ -21,20 +21,9 @@ export default function TaskEditor(props: ITaskEditorProps) {
     let [task, setTask] = useState(props.task)
 
     let [page, setPage] = useState(0)
-    let [compList, setCompList] = useState<Composition[]>([])
+    let [compList, setCompList] = useState<Composition[]>(task.Compositions)
 
-    let outputModules: OutputModule[] = [
-        OutputModule.Default.Lossless,
-        new OutputModule("Lossless with Alpha", "[compName].[fileExtension]", false)
-    ]
-    
-    let [renderSettings, setRenderSettings] = useState([
-        RenderSettings.Default.BestSettings,
-        RenderSettings.Default.CurrentSettings,
-        RenderSettings.Default.DVSettings,
-        RenderSettings.Default.DraftSettings,
-        RenderSettings.Default.MultiMachineSettings,
-    ])
+    let [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault)
     
     function calcMemory(props: { mem?: number, percent?: number }): number {
         if (props.mem !== undefined) 
