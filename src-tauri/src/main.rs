@@ -8,6 +8,27 @@ use tauri::Manager;
 use sysinfo::{System, SystemExt};
 use aeparser::parse_project;
 
+use tauri::{Runtime, Window};
+
+pub trait WindowExt {
+    #[cfg(target_os = "macos")]
+    fn set_document_edited(&self, edited: bool);
+}
+
+/// This is stupid and there should be better way to do it...
+impl<R: Runtime> WindowExt for Window<R> {
+    #[cfg(target_os = "macos")]
+    fn set_document_edited(&self, edited: bool) {
+        use cocoa::appkit::NSWindow;
+
+        let window = self.ns_window().unwrap() as cocoa::base::id;
+
+        unsafe {
+            window.setDocumentEdited_(if state { cocoa::base::YES } else { cocoa::base::NO });
+        }
+    }
+}
+
 /// Get the total memory of the current platform in kilobytes
 #[tauri::command]
 fn get_platform_memory() -> u64 {
@@ -41,6 +62,12 @@ fn parse_aep(project_path: String) -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+fn win_toggle_document_edited(window: Window, state: bool) {
+    #[cfg(target_os = "macos")]
+    window.set_document_edited(state);
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -48,12 +75,18 @@ fn main() {
 
             #[cfg(any(windows, target_os = "macos"))]
             set_shadow(&window, true).unwrap();
+
+            let omwindow = app.get_window("omeditor").unwrap();
+
+            #[cfg(any(windows, target_os = "macos"))]
+            set_shadow(&omwindow, true).unwrap();
             Ok(())
         }) 
         .invoke_handler(tauri::generate_handler![
             get_platform_memory, 
             get_platform_cpu,
-            parse_aep
+            parse_aep,
+            win_toggle_document_edited
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

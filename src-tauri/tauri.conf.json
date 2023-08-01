@@ -73,6 +73,18 @@
                 "center": true,
                 "width": 960,
                 "height": 600
+            },
+            {
+                "label": "omeditor",
+                "title": "Output Module Editor",
+                "width": 720,
+                "height": 480,
+                "resizable": true,
+                "visible": false,
+                "fullscreen": false,
+                "decorations": false,
+                "center": true,
+                "url": "/omeditor"
             }
         ]
     }

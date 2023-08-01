@@ -1,7 +1,7 @@
 [package]
 name = "aerender-launcher"
 version = "0.9.0"
-description = "UI wrapper for aerender with various features. Rewritten in Tauri."
+description = "AErender Launcher"
 authors = ["Lily Stilson", "Lianella Stilson"]
 license = "Apache-2.0"
 repository = "https://github.com/Night-Sky-Studio/AErender-Launcher"
@@ -18,6 +18,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 window-shadows = "0.2.1"
 sysinfo = "0.29.6"
+[target.'cfg(unix)'.dependencies]
+cocoa = "0.25.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
