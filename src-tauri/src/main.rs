@@ -63,11 +63,15 @@ fn parse_aep(project_path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn win_toggle_document_edited(window: Window, state: bool) {
+fn win_toggle_document_edited(_window: Window, _state: bool) {
     #[cfg(target_os = "macos")]
-    window.set_document_edited(state);
+    _window.set_document_edited(_state);
 }
 
+#[tauri::command]
+fn print_console(msg: String) {
+    println!("Tauri cmd: {}", msg);
+}
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -86,7 +90,8 @@ fn main() {
             get_platform_memory, 
             get_platform_cpu,
             parse_aep,
-            win_toggle_document_edited
+            win_toggle_document_edited,
+            print_console
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

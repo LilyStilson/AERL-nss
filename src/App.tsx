@@ -139,7 +139,11 @@ export default function App() {
                                     <ExpandIcon size={12} filled alt={isWindowMaximized} respectsTheme/>
                                 </Button>
                                 <Button variant="subtle" color="red" onClick={() => {
+                                    // close all hidden windows
+                                    WebviewWindow.getByLabel("omeditor")?.close()
+
                                     appWindow.close()
+
                                 }}>
                                     <CloseIcon size={14} filled respectsTheme />
                                 </Button>

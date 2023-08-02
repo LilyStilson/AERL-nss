@@ -35,7 +35,7 @@ export default function OutputModuleEditor(): React.JSX.Element {
                                     <ExpandIcon size={12} filled alt={isWindowMaximized} respectsTheme/>
                                 </Button>
                                 <Button variant="subtle" color="red" onClick={() => {
-                                    thisWindow.hide()
+                                    thisWindow.close()
                                 }}>
                                     <CloseIcon size={14} filled respectsTheme />
                                 </Button>

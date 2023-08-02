@@ -175,11 +175,11 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                 }} />
                                 <TextInput value={cacheLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setCacheLimitText(event.target.value)} onKeyDown={(event) => {
                                     if (event.key == "Enter") {
-                                        setCacheLimitText(`${event.target.value}%`)
+                                        setCacheLimitText(`${(event.target as HTMLInputElement).value}%`)
                                         setTask((current) => {
-                                            return { ...current, CacheLimit: tryParseNumber(event.target.value) ?? 0 }
+                                            return { ...current, CacheLimit: tryParseNumber((event.target as HTMLInputElement).value) ?? 100 }
                                         })
-                                        settings.Current.CacheLimit = event.target.value
+                                        settings.Current.CacheLimit = tryParseNumber((event.target as HTMLInputElement).value) ?? 100
                                     }
                                 }} />
                             </div>
@@ -195,9 +195,10 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     settings.Current.MemoryLimit = value
                                 }} />
                                 <TextInput value={memLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setMemLimitText(event.target.value)} onKeyDown={(event) => {
+                                    
                                     if (event.key == "Enter") { 
                                         // TODO: event.target.value (Property 'value' does not exist on type 'EventTarget'.ts(2339))
-                                        let currentText: string = event.target.value
+                                        let currentText: string = (event.target as HTMLInputElement).value
                                         let currentNum: number = settings.System.Memory / 1024 / 1024
 
                                         if (currentText.toLowerCase().endsWith("mb")) {

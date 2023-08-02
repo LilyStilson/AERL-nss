@@ -11,6 +11,16 @@
         "version": "0.9.0-beta"
     },
     "tauri": {
+        "cli": {
+            "args": [
+                {
+                    "name": "print",
+                    "short": "p",
+                    "takesValue": true,
+                    "multiple": false
+                }
+            ]
+        },
         "allowlist": {
             "all": false,
             "fs": {
@@ -39,6 +49,12 @@
                 "all": false,
                 "execute": true,
                 "open": true
+            },
+            "process": {
+                "all": false,
+                "exit": true,
+                "relaunch": false,
+                "relaunchDangerousAllowSymlinkMacos": false
             },
             "dialog": {
                 "all": false,
@@ -70,6 +86,7 @@
                 "resizable": true,
                 "decorations": false,
                 "title": "AErender Launcher",
+                "visible": false,
                 "center": true,
                 "width": 960,
                 "height": 600
