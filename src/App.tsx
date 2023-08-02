@@ -38,6 +38,11 @@ export default function App() {
             settings.save()
         }
     }, [])
+
+    function appExit() {
+        WebviewWindow.getByLabel("omeditor")?.close()
+        appWindow.close()
+    }
     
     return (
         <AppContainer colorScheme={settings.colorScheme} componentDefinitions={settings.ComponentDefinitions}>
@@ -89,7 +94,7 @@ export default function App() {
                                         {
                                             name: "Exit",
                                             shortcut: { windows: "Alt+F4", macos: "Cmd+Q" },
-                                            onClick: () => appWindow.close()
+                                            onClick: appExit
                                         }
                                     ]
                                 },
@@ -138,9 +143,7 @@ export default function App() {
                                 }}>
                                     <ExpandIcon size={12} filled alt={isWindowMaximized} respectsTheme/>
                                 </Button>
-                                <Button variant="subtle" color="red" onClick={() => {
-                                    appWindow.close()
-                                }}>
+                                <Button variant="subtle" color="red" onClick={appExit}>
                                     <CloseIcon size={14} filled respectsTheme />
                                 </Button>
                             </Button.Group>
