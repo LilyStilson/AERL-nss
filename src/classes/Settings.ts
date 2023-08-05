@@ -5,6 +5,9 @@ import { tryParseBoolean, tryParseNumber } from "./Helpers/Functions"
 import { invoke } from "@tauri-apps/api"
 import { Platform } from "./Helpers/Platform"
 
+import { MantineThemeComponents } from "@mantine/styles/lib/theme/types/MantineTheme"
+import { Theme } from "./Helpers/Enums"
+
 interface ILauncherConfig {
     Language: number,
     Style: number,
@@ -69,6 +72,22 @@ export class Settings {
     } = {
         Memory: -1,
         Cores: -1,
+    }
+
+    // TS limitations 101
+    colorScheme: Theme = Theme.Dark as Theme
+
+    ComponentDefinitions = {
+        Button: { defaultProps: { size: "md" } },
+        TextInput: { defaultProps: { size: "md" } },
+        NumberInput: { defaultProps: { size: "md" } },
+        Checkbox: { defaultProps: { size: "md" } },
+        Text: { defaultProps: { size: "md" } },
+        Title: { defaultProps: { color: this.colorScheme == Theme.Light ? "black" : "white" } },
+        Select: { defaultProps: { size: "md", } },
+        Card: { defaultProps: { withBorder: this.colorScheme == Theme.Light } },
+        Paper: { defaultProps: { withBorder: this.colorScheme == Theme.Light } },
+        Slider: { defaultProps: { size: "md" } },
     }
 
     constructor() { 
