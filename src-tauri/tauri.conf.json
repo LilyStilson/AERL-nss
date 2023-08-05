@@ -84,7 +84,8 @@
                 "fullscreen": false,
                 "decorations": false,
                 "center": true,
-                "url": "/omeditor"
+                "url": "/omeditor",
+                "fileDropEnabled": false
             }
         ]
     }

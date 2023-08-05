@@ -63,9 +63,9 @@ fn parse_aep(project_path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn win_toggle_document_edited(window: Window, state: bool) {
+fn win_toggle_document_edited(_window: Window, _state: bool) {
     #[cfg(target_os = "macos")]
-    window.set_document_edited(state);
+    _window.set_document_edited(_state);
 }
 
 fn main() {

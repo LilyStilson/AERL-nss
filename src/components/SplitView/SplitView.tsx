@@ -18,6 +18,8 @@ interface ISplitViewProps {
  * @remarks I kinda surprised that I couldn't find an out-of-the-box working solution for this... This is a very basic implementation, and any fixes/changes are very welcome :)
  * @param props Default SplitView props
  * @returns A `<SplitView />` component
+ * 
+ * @bug `ISplitViewProps.splitterPos` is not working properly
  */
 export default function SplitView(props: ISplitViewProps): React.JSX.Element {
     const
@@ -94,6 +96,15 @@ export default function SplitView(props: ISplitViewProps): React.JSX.Element {
         return () => observer.disconnect()
     }, [])
 
+    function setSplit(leftWidth: number, rightWidth: number) {
+        if (rightWidth <= minSize[1] || leftWidth <= minSize[0]) 
+            return
+
+        setSplitterPos(`${leftWidth}px`)
+        setLeftPaneWidth(`${leftWidth}px`)
+        setRightPaneWidth(`${rightWidth}px`)
+    }
+
     const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (!isDragging) return
 
@@ -102,15 +113,11 @@ export default function SplitView(props: ISplitViewProps): React.JSX.Element {
             newLeftPaneWidth = event.clientX - wrapperRect!.left,
             newRightPaneWidth = wrapperRect!.right - event.clientX - splitterRef.current!.clientWidth
 
-        if (newRightPaneWidth <= minSize[1] || newLeftPaneWidth <= minSize[0]) 
-            return
-
-        setSplitterPos(`${newLeftPaneWidth}px`)
-        setLeftPaneWidth(`${newLeftPaneWidth}px`)
-        setRightPaneWidth(`${newRightPaneWidth}px`)
-
+        setSplit(newLeftPaneWidth, newRightPaneWidth)
         // console.log(`Left: ${leftPaneWidth}, Right: ${rightPaneWidth}`)
     }
+
+    // setSplit(parseInt(`${leftPaneWidth}`), parseInt(`${leftPaneWidth}`))
 
     return (
         <div ref={wrapperRef} style={props.style} className="splitter-wrapper" onMouseUp={onMouseUp} onMouseMove={onMouseMove}>

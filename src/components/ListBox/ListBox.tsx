@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react"
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { Text, Card, Checkbox, Paper, ScrollArea, useMantineTheme, useMantineColorScheme } from "@mantine/core"
 
 export interface IListBoxProps {
@@ -12,6 +12,7 @@ export interface IListBoxProps {
 }
 
 export type TListBoxSelectionHandle = {
+    select: (index: number) => void
     selectAll: () => void
     deselectAll: () => void
 }
@@ -23,7 +24,15 @@ const ListBox = forwardRef<TListBoxSelectionHandle, IListBoxProps>((props: IList
     let [selected, setSelected] = useState(props.selected ?? -1)
     let [checked, setChecked] = useState<number[]>([])
 
+    // useEffect(() => {
+    //     console.log("Listbox selected", selected)
+    // }, [selected])
+
     useImperativeHandle(thisRef, () => ({
+        select(index: number) {
+            setSelected(index)
+            props.onSelectionChange?.call(null, index)
+        },
         selectAll() {
             let newValue = props.items.map((item, index) => index)
             setChecked((checked) => newValue)

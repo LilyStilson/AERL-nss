@@ -183,10 +183,10 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
                 }
                 Footer={
                     <Card shadow="sm" style={{ display: "flex", justifyContent: "center", padding: "8px", gap: "0 8px" }}>
-                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><SettingsIcon size={24} filled respectsTheme /></Button>
+                        <Button variant="default" className="btn-small"><SettingsIcon size={24} filled respectsTheme /></Button>
                         <Button variant="filled" style={{ width: "128px" }} rightIcon={<PlayIcon size={20} filled fillColor="white" />} 
                         disabled={ renderTasks.length == 0 || renderTasks.find((task) => task.Output === "" || task.Compositions.length == 0) != undefined }>Launch</Button>
-                        <Button variant="default" style={{ padding: "0", width: "30px", height: "30px"}}><QueueIcon size={24} filled respectsTheme /></Button>
+                        <Button variant="default" className="btn-small"><QueueIcon size={24} filled respectsTheme /></Button>
                     </Card>
                 }
             />
