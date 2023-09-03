@@ -1,7 +1,7 @@
 import OutputModule from "./OutputModule"
 import RenderSettings from "./RenderSettings"
 import Composition from "./Composition"
-import settings from "../Settings"
+import { settings } from "../Settings"
 
 export default class RenderTask {
     Project: string = ""

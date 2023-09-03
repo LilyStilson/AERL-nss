@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { appWindow, getCurrent as getCurrentWindow } from "@tauri-apps/api/window"
 import AppContainer from "../components/AppContainer"
-import settings from "../classes/Settings"
+import { settings } from "../classes/Settings"
 import { Button, Card, Group, Modal, Paper, Tabs, TextInput, Textarea, Title } from "@mantine/core"
 import { CloseIcon, ExpandIcon, MinimizeIcon, MinusIcon, PlusIcon } from "../components/Icons/Icons"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
@@ -31,7 +31,7 @@ export default function OutputModuleEditor(): React.JSX.Element {
 
     useEffect(() => {
         setWinDocEdited(JSON.stringify(currentOMs) !== JSON.stringify(settings.Current.OutputModules.Modules)) 
-    }, [currentOMs])
+    }, [currentOMs, selectedOM])
 
     const possibleMaskParts = {
         project: ["[projectName]", "[compName]", "[renderSettingsName]", "[outputModuleName]", "[fileExtension]"],
@@ -68,9 +68,12 @@ export default function OutputModuleEditor(): React.JSX.Element {
     }
 
     function saveBtnClick(): void {
-        settings.Current.OutputModules.Modules = currentOMs
         setSelectedOM(settings.Current.OutputModules.Modules[0])
         listBoxRef.current?.select(0)
+        // TODO: changing settings here does not change them everywhere
+        // despite the variable being the same throughout the app
+        settings.Current.OutputModules.Modules = currentOMs
+        console.log(settings.Current.OutputModules.Modules)
         settings.save()
         close()
         thisWindow.hide()
@@ -230,7 +233,7 @@ export default function OutputModuleEditor(): React.JSX.Element {
                         <Group>
                             <Button variant="default" className="btn-small" onClick={() => {
                                 setCurrentOMs((current) => {
-                                    return [...current, { Module: "Untitled output module", Mask: "", IsImported: false }]
+                                    return [...current, new OutputModule("Untitled output module", "", false)]
                                 }, (state) => {
                                     listBoxRef.current?.select((state?.length ?? currentOMs.length) - 1)
                                     setSelectedOM(currentOMs[(state?.length ?? currentOMs.length) - 1])

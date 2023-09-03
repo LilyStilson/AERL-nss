@@ -7,6 +7,7 @@ import { Platform } from "./Helpers/Platform"
 
 import { MantineThemeComponents } from "@mantine/styles/lib/theme/types/MantineTheme"
 import { Theme } from "./Helpers/Enums"
+import { useState } from "react"
 
 interface ILauncherConfig {
     Language: number,
@@ -89,6 +90,8 @@ export class Settings {
         Paper: { defaultProps: { withBorder: this.colorScheme == Theme.Light } },
         Slider: { defaultProps: { size: "md" } },
     }
+
+    // settingsState = useState(this)
 
     constructor() { 
         this.isLoaded = false
@@ -197,5 +200,5 @@ export class Settings {
 
 }
 
-let settings = new Settings()
-export default settings
+export let settings = new Settings()
+// export let [settings, setSettings] = useState(_settings)

@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 import App from "./App"
 import OutputModuleEditor from "./views/OutputModuleEditor"
+import { SettingsProvider } from "./components/SettingsProvider"
 
 const router = createBrowserRouter([
     {
@@ -17,9 +18,10 @@ const router = createBrowserRouter([
     }
 ])
 
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <SettingsProvider>
+            <RouterProvider router={router} />
+        </SettingsProvider>
     </React.StrictMode>,
 )

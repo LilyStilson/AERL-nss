@@ -7,7 +7,7 @@ import Pager from "../components/Pager/Pager"
 import { EditorSender } from "../classes/Helpers/Enums"
 import PlusIcon from "../components/Icons/PlusIcon"
 import { tryParseNumber } from "../classes/Helpers/Functions"
-import settings from "../classes/Settings"
+import { settings } from "../classes/Settings"
 import MinusIcon from "../components/Icons/MinusIcon"
 import { invoke } from "@tauri-apps/api"
 
@@ -18,13 +18,16 @@ interface ITaskEditorProps {
 }
 
 export default function TaskEditor(props: ITaskEditorProps) {
-    let [task, setTask] = useState(props.task)
+    let [task, setTask] = useState(props.task),
+        [page, setPage] = useState(0),
+        [compList, setCompList] = useState<Composition[]>(task.Compositions),
+        // [outputModules, setOutputModules] = useState(settings.Current.OutputModules.Modules),
+        [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault)
+     
+    useEffect(() => {
+        console.log(settings.Current.OutputModules.Modules)
+    })
 
-    let [page, setPage] = useState(0)
-    let [compList, setCompList] = useState<Composition[]>(task.Compositions)
-
-    let [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault)
-    
     function calcMemory(props: { mem?: number, percent?: number }): number {
         if (props.mem !== undefined) 
             return Math.round(props.mem / (settings.System.Memory / 1024 / 1024) * 100)

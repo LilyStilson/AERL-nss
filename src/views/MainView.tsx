@@ -7,7 +7,7 @@ import {  IAfterEffectsProject, RenderTask } from "../classes/Rendering"
 import { open as openDialog } from "@tauri-apps/api/dialog"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { EditorSender } from "../classes/Helpers/Enums"
-import settings from "../classes/Settings"
+import { settings } from "../classes/Settings"
 import ImportView from "./ImportView"
 import { invoke } from "@tauri-apps/api"
 import { useStopwatch, useTimer } from "react-timer-hook"
@@ -104,6 +104,7 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
 
             dialogs.importProject.open()
         } else {
+            setIsWaiting(false)
             props.callback?.call(null, false)
         }
     }
@@ -124,7 +125,7 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
                         <div style={{ display: "flex", width: "100%", justifyContent: "right", gap: "0 8px" }}>
                             {/* <Button variant={ isWaiting ? "filled" : "default" } size="sm" onClick={() => {
                                 setIsWaiting(!isWaiting)
-                            }}>Toggle loading overlay</Button>
+                            }}>Toggle loading overlay</Button>*/}
                             <Button variant="default" size="sm" onClick={ async () => {
                                 await settings.init()
                                 if (!settings.isLoaded) 
@@ -132,7 +133,7 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
                                         if (!await settings.tryLoadLegacy())
                                             await settings.reset()
                                 console.log(settings)
-                            }}>Load settings</Button> */}
+                            }}>Load settings</Button> 
                             <Button variant="default" size="sm" leftIcon={<PlusIcon size={16} filled respectsTheme />} onClick={newTask}>New Task</Button>
                             {/* <Button variant="default" size="sm" leftIcon={<MinusIcon size={16} filled respectsTheme />}>Remove Task</Button> */}
                         </div>

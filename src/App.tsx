@@ -8,13 +8,17 @@ import { CSSProperties, useEffect, useRef, useState } from "react"
 import { Platform, GetPlatform } from "./classes/Helpers/Platform"
 import { Theme } from "./classes/Helpers/Enums";
 import { LauncherLogoIcon } from "./components/Icons/Icons"
-import settings from "./classes/Settings"
+import { settings } from "./classes/Settings"
 import AppContainer from "./components/AppContainer"
+import ColorSchemeIcon from "./components/Icons/ColorSchemeIcon"
+import { SettingsProvider } from "./components/SettingsProvider"
 
 export default function App() {
-    let [isWindowMaximized, setIsWindowMaximized] = useState(false);
-    let [modalOpened, setModalOpened] = useState(false);
-    let [recentProjects, setRecentProjects] = useState<string[]>([])
+    let [isWindowMaximized, setIsWindowMaximized] = useState(false),
+        [modalOpened, setModalOpened] = useState(false),
+        [recentProjects, setRecentProjects] = useState<string[]>([]),
+        [colorScheme, setColorScheme] = useState<Theme>(settings.colorScheme)
+
     let mainViewRef = useRef<TMainViewHandle>(null)
 
     appWindow.onResized(async () => {
@@ -45,7 +49,7 @@ export default function App() {
     }
     
     return (
-        <AppContainer colorScheme={settings.colorScheme} componentDefinitions={settings.ComponentDefinitions}>
+        <AppContainer colorScheme={colorScheme} componentDefinitions={settings.ComponentDefinitions}>
             <div style={{ display: "flex", width: "100%", flexWrap: "nowrap", flexDirection: "column", margin: "8px" }}>
                 <div style={{ flex: "0 1" }}>
                     <Card shadow="sm" className="titlebar" data-tauri-drag-region>
@@ -133,6 +137,9 @@ export default function App() {
                         </div>
                         <div className="chrome">
                             <Button.Group>
+                                <Button variant="subtle" color="blue" onClick={() => {
+                                    setColorScheme((colorScheme) => colorScheme === Theme.Light ? Theme.Dark : Theme.Light)
+                                }}><ColorSchemeIcon size={24} filled respectsTheme alt={colorScheme === Theme.Light} /></Button>
                                 <Button variant="subtle" color="blue" onClick={() => {
                                     appWindow.minimize()
                                 }}>
