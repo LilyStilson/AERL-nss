@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { appWindow, getCurrent as getCurrentWindow } from "@tauri-apps/api/window"
 import AppContainer from "../components/AppContainer"
-import { settings } from "../classes/Settings"
+// import { settings } from "../classes/Settings"
 import { Button, Card, Group, Modal, Paper, Tabs, TextInput, Textarea, Title } from "@mantine/core"
 import { CloseIcon, ExpandIcon, MinimizeIcon, MinusIcon, PlusIcon } from "../components/Icons/Icons"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
@@ -12,12 +12,14 @@ import CircleIcon from "../components/Icons/CircleIcon"
 import { confirm } from "@tauri-apps/api/dialog"
 import { useDisclosure } from "@mantine/hooks"
 import useStateCallback from "../classes/useStateCallback"
+import { useSettings } from "../components/SettingsProvider"
 
 // getCurrentWindow().hide()
 export default function OutputModuleEditor(): React.JSX.Element {
     const thisWindow = getCurrentWindow()
 
     let [isWindowMaximized, setIsWindowMaximized] = useState(false),
+        settings = useSettings(),
         [currentOMs, setCurrentOMs] = useStateCallback(settings.Current.OutputModules.Modules),
         [selectedOM, setSelectedOM] = useState<OutputModule>(),
         [omAlreadyExists, setOmAlreadyExists] = useState(false),

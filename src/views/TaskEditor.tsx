@@ -7,9 +7,10 @@ import Pager from "../components/Pager/Pager"
 import { EditorSender } from "../classes/Helpers/Enums"
 import PlusIcon from "../components/Icons/PlusIcon"
 import { tryParseNumber } from "../classes/Helpers/Functions"
-import { settings } from "../classes/Settings"
+// import { settings } from "../classes/Settings" 
 import MinusIcon from "../components/Icons/MinusIcon"
 import { invoke } from "@tauri-apps/api"
+import { useSettings } from "../components/SettingsProvider"
 
 interface ITaskEditorProps {
     sender: string
@@ -22,8 +23,9 @@ export default function TaskEditor(props: ITaskEditorProps) {
         [page, setPage] = useState(0),
         [compList, setCompList] = useState<Composition[]>(task.Compositions),
         // [outputModules, setOutputModules] = useState(settings.Current.OutputModules.Modules),
-        [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault)
-     
+        [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault),
+        settings = useSettings()
+
     useEffect(() => {
         console.log(settings.Current.OutputModules.Modules)
     })

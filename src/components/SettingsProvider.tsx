@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
-import { Settings } from "../classes/Settings";
+import { Settings, settings } from "../classes/Settings";
 
-const SettingsProviderContext = createContext<Settings>(new Settings())
+const SettingsProviderContext = createContext<Settings>(settings)
 
 export function useSettings() {
     return useContext(SettingsProviderContext)
