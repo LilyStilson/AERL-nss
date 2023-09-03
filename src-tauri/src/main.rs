@@ -24,7 +24,7 @@ impl<R: Runtime> WindowExt for Window<R> {
         let window = self.ns_window().unwrap() as cocoa::base::id;
 
         unsafe {
-            window.setDocumentEdited_(if state { cocoa::base::YES } else { cocoa::base::NO });
+            window.setDocumentEdited_(if edited { cocoa::base::YES } else { cocoa::base::NO });
         }
     }
 }
