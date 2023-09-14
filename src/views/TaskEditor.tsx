@@ -7,10 +7,9 @@ import Pager from "../components/Pager/Pager"
 import { EditorSender } from "../classes/Helpers/Enums"
 import PlusIcon from "../components/Icons/PlusIcon"
 import { tryParseNumber } from "../classes/Helpers/Functions"
-// import { settings } from "../classes/Settings" 
 import MinusIcon from "../components/Icons/MinusIcon"
-import { invoke } from "@tauri-apps/api"
-import { useSettings } from "../components/SettingsProvider"
+import { ISettingsProps, Settings } from "../classes/Settings"
+// import { useSettings } from "../components/SettingsProvider"
 
 interface ITaskEditorProps {
     sender: string
@@ -18,13 +17,12 @@ interface ITaskEditorProps {
     callback?: (task?: RenderTask) => void
 }
 
-export default function TaskEditor(props: ITaskEditorProps) {
-    let [task, setTask] = useState(props.task),
+export default function TaskEditor(props: ITaskEditorProps & ISettingsProps) {
+    let [settings, setSettings] = props.settings,
+        [task, setTask] = useState(props.task),
         [page, setPage] = useState(0),
         [compList, setCompList] = useState<Composition[]>(task.Compositions),
-        // [outputModules, setOutputModules] = useState(settings.Current.OutputModules.Modules),
-        [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault),
-        settings = useSettings()
+        [renderSettings, setRenderSettings] = useState(RenderSettings.GeneratedDefault)
 
     useEffect(() => {
         console.log(settings.Current.OutputModules.Modules)
@@ -91,8 +89,13 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                         setTask((current) => {
                                             return { ...current, Output: file as string}
                                         })
-                                        settings.Current.LastOutputPath = file as string
-                                        // settings.Current.TemporarySavePath
+                                        setSettings((current) => {
+                                            return Settings.updateSettings(current, {
+                                                ...current.Current,
+                                                LastOutputPath: file as string
+                                            })
+                                        })
+                                        
                                     }
                                 }}>Choose file...</Button>
                             </div>
@@ -107,7 +110,15 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                             setTask((current) => {
                                                 return { ...current, OutputModule: module as OutputModule }
                                             })
-                                            settings.Current.OutputModules.Selected = settings.Current.OutputModules.Modules.indexOf(module as OutputModule)
+                                            setSettings((current) => { 
+                                                return Settings.updateSettings(current, {
+                                                    ...current.Current,
+                                                    OutputModules: {
+                                                        ...current.Current.OutputModules,
+                                                        Selected: current.Current.OutputModules.Modules.indexOf(module as OutputModule)
+                                                    }
+                                                })
+                                            })
                                         }
                                     }
                                 }/>
@@ -123,7 +134,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                             setTask((current) => {
                                                 return { ...current, RenderSettings: s! }
                                             })
-                                            settings.Current.RenderSettings = s!
+                                            setSettings((current) => {
+                                                return Settings.updateSettings(current, {
+                                                    ...current.Current, 
+                                                    RenderSettings: s!
+                                                })
+                                            })
                                         }
                                     }}
                                     getCreateLabel={(query) => `+ ${query}`}
@@ -143,15 +159,30 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     <Grid.Col span="auto">
                                         <Stack spacing="xs">
                                             <Checkbox label="Play sound on render finish" checked={task.Sound} onChange={(event) => setTask((current) => { 
-                                                settings.Current.Sound = event.target.checked
+                                                setSettings((current) => { 
+                                                    return Settings.updateSettings(current, {
+                                                        ...current.Current,
+                                                        Sound: event.target.checked
+                                                    })
+                                                })
                                                 return { ...current, Sound: event.target.checked }
                                             })} />
                                             <Checkbox label="Use CPU multiprocessing" checked={task.Multiprocessing} onChange={(event) => setTask((current) => {
-                                                settings.Current.Multithreaded = event.target.checked
+                                                setSettings((current) => {  
+                                                    return Settings.updateSettings(current, {
+                                                        ...current.Current,
+                                                        Multithreaded: event.target.checked
+                                                    })
+                                                })  
                                                 return { ...current, Multiprocessing: event.target.checked }
                                             })} />
                                             <Checkbox label="Render with missing files" checked={task.MissingFiles} onChange={(event) => setTask((current) => {
-                                                settings.Current.MissingFiles = event.target.checked
+                                                setSettings((current) => {  
+                                                    return Settings.updateSettings(current, {
+                                                        ...current.Current,
+                                                        MissingFiles: event.target.checked
+                                                    })
+                                                })  
                                                 return { ...current, MissingFiles: event.target.checked }
                                             })} />
                                         </Stack>
@@ -160,7 +191,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                         <Stack spacing="xs">
                                             <Checkbox label="Custom properties" checked={CustomPropsEnabled} onChange={() => { setCustomPropsEnabled(!CustomPropsEnabled) }} />
                                             <TextInput style={{ flex: "1 0" }} value={task.CustomProperties} disabled={!CustomPropsEnabled} onChange={(event) => setTask((current) => {
-                                                settings.Current.CustomProperties = event.target.value
+                                                setSettings((current) => {  
+                                                    return Settings.updateSettings(current, {
+                                                        ...current.Current,
+                                                        CustomProperties: event.target.value
+                                                    })
+                                                }) 
                                                 return { ...current, CustomProperties: event.target.value }
                                             })}/>
                                         </Stack>
@@ -176,7 +212,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     setTask((current) => {
                                         return { ...current, CacheLimit: value }
                                     })
-                                    settings.Current.CacheLimit = value
+                                    setSettings((current) => {
+                                        return Settings.updateSettings(current, {
+                                            ...current.Current,
+                                            CacheLimit: value
+                                        })
+                                    })
                                 }} />
                                 <TextInput value={cacheLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setCacheLimitText(event.target.value)} onKeyDown={(event) => {
                                     if (event.key == "Enter") {
@@ -184,7 +225,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                         setTask((current) => {
                                             return { ...current, CacheLimit: tryParseNumber((event.target as HTMLInputElement).value) ?? 100 }
                                         })
-                                        settings.Current.CacheLimit = tryParseNumber((event.target as HTMLInputElement).value) ?? 100
+                                        setSettings((current) => {
+                                            return Settings.updateSettings(current, {
+                                                ...current.Current,
+                                                CacheLimit: tryParseNumber((event.target as HTMLInputElement).value) ?? 100
+                                            })
+                                        })
                                     }
                                 }} />
                             </div>
@@ -197,7 +243,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                     setTask((current) => {
                                         return { ...current, MemoryLimit: value }
                                     })
-                                    settings.Current.MemoryLimit = value
+                                    setSettings((current) => {
+                                        return Settings.updateSettings(current, {
+                                            ...current.Current,
+                                            MemoryLimit: value
+                                        })
+                                    })
                                 }} />
                                 <TextInput value={memLimitText} style={{ width: "96px", marginLeft: "8px" }} onChange={(event) => setMemLimitText(event.target.value)} onKeyDown={(event) => {
                                     if (event.key == "Enter") { 
@@ -222,7 +273,12 @@ export default function TaskEditor(props: ITaskEditorProps) {
                                         setTask((current) => {
                                             return { ...current, MemoryLimit: calcMemory({ mem: currentNum }) }
                                         })
-                                        settings.Current.MemoryLimit = calcMemory({ mem: currentNum })
+                                        setSettings((current) => {
+                                            return Settings.updateSettings(current, {
+                                                ...current.Current,
+                                                MemoryLimit: calcMemory({ mem: currentNum })
+                                            })
+                                        })
                                     }
                                 }} />
                             </div>
@@ -233,12 +289,6 @@ export default function TaskEditor(props: ITaskEditorProps) {
                             <Button variant="default" onClick={() => {
                                 props.callback?.call(null, undefined)
                             }}>Cancel</Button>
-                            <Button variant="outline" onClick={async () => {
-                                // TODO: IS ALIVE, ALIVEEE!
-                                const result = await invoke<string>("parse_aep", { projectPath: task.Project })
-
-                                console.log(JSON.parse(result))
-                            }}>Try parse project</Button>
                             <Button variant="outline" onClick={() => {
                                 setPage(1)
                             }}>Compositions {">>"}</Button>

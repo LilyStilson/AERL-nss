@@ -17,7 +17,8 @@ const useStyles = createStyles((theme) => ({
     },
   
     item: {
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[1],
+        color: theme.colorScheme === 'dark' ? theme.white : theme.black,
         border: `${rem(1)} solid transparent`,
         position: 'relative',
         zIndex: 0,
@@ -27,7 +28,7 @@ const useStyles = createStyles((theme) => ({
             // transform: 'scale(1.03)',
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
             boxShadow: theme.shadows.md,
-            borderColor: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2],
+            borderColor: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4],
             borderRadius: theme.radius.md,
             zIndex: 1,
         },
@@ -42,7 +43,7 @@ export default function Expander(props: IExpanderProps): React.JSX.Element {
             <Accordion.Item value="default">
                 <div className="expander-title">
                     <Accordion.Control style={{ width: "unset", flexGrow: "1" }}>
-                        <Title order={4}>{props.title}</Title>
+                        <Title order={4} color="">{props.title}</Title>
                     </Accordion.Control>
                     <Text style={{ flexShrink: "1", marginRight: "8px" }}>{props.subtitle}</Text>
                     <Button.Group>

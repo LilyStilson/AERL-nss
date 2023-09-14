@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react"
 import { FloatingPosition } from "@mantine/core/lib/Floating";
-import { Button, Kbd, Menu, MenuProps } from "@mantine/core"
+import { Button, Kbd, Menu, MenuProps, useMantineTheme } from "@mantine/core"
 import { useColorScheme } from "@mantine/hooks";
 import { Theme } from "../../classes/Helpers/Enums";
 import { isNullOrEmpty } from "../../classes/Helpers/Functions";
@@ -75,8 +75,10 @@ function ShortcutProps(props?: IShortcut): { accessKey: string, rightSection: Re
  * @todo that bloody `key` warning...
  */
 export default function MenuBar(props: IMenuBarProps): React.JSX.Element {
+    let theme = useMantineTheme()
+
     const MenuButtonStyle: CSSProperties = {
-        color: useColorScheme() == Theme.Light ? "black" : "white",
+        color: theme.colorScheme == Theme.Light ? "black" : "white",
     }
 
     function menu(target: React.JSX.Element, dropdown: React.JSX.Element[], props: MenuProps): React.JSX.Element {

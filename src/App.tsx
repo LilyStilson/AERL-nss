@@ -1,23 +1,32 @@
 import "./App.css"
-import { Card,  MantineProvider, Button } from "@mantine/core"
+import { Card, Button } from "@mantine/core"
 import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
 import MainView, { TMainViewHandle } from "./views/MainView"
 import MenuBar from "./components/MenuBar/MenuBar"
 import { CloseIcon, ExpandIcon, MinimizeIcon } from "./components/Icons/Icons"
-import { CSSProperties, useEffect, useRef, useState } from "react"
-import { Platform, GetPlatform } from "./classes/Helpers/Platform"
+import { useEffect, useRef, useState } from "react"
 import { Theme } from "./classes/Helpers/Enums";
 import { LauncherLogoIcon } from "./components/Icons/Icons"
-import { settings } from "./classes/Settings"
+import { ILauncherConfig, ISettingsObject, Settings, SettingsSchema } from "./classes/Settings"
 import AppContainer from "./components/AppContainer"
 import ColorSchemeIcon from "./components/Icons/ColorSchemeIcon"
-import { SettingsProvider } from "./components/SettingsProvider"
+// import { useSettings } from "./components/SettingsProvider"
+import { UnlistenFn, listen } from "@tauri-apps/api/event"
+import { emit } from "@tauri-apps/api/event"
 
 export default function App() {
-    let [isWindowMaximized, setIsWindowMaximized] = useState(false),
+    let [settings, _setSettings] = useState<ISettingsObject>(SettingsSchema.defaultObject()),
+        [isWindowMaximized, setIsWindowMaximized] = useState(false),
         [modalOpened, setModalOpened] = useState(false),
-        [recentProjects, setRecentProjects] = useState<string[]>([]),
-        [colorScheme, setColorScheme] = useState<Theme>(settings.colorScheme)
+        [recentProjects, setRecentProjects] = useState<string[]>([])
+        // [colorScheme, setColorScheme] = useState<Theme>(settings.Current?.Style ?? Theme.Dark)
+
+    const setSettings = (action: React.SetStateAction<ISettingsObject>, emitEvent?: string) => {
+        _setSettings(action)
+        if (emitEvent)
+            emit(emitEvent, { settings: settings.Current })
+        console.debug("App.tsx :: Settings state changed", settings.Current)
+    }
 
     let mainViewRef = useRef<TMainViewHandle>(null)
 
@@ -25,21 +34,51 @@ export default function App() {
         setIsWindowMaximized(await appWindow.isMaximized())
     })
 
+    appWindow.onCloseRequested(async () => {
+        Settings.save(settings)
+    })
+
     useEffect(() => {
         (async () => {
-            await settings.init()
-            if (!settings.isLoaded) 
-                if (!await settings.tryLoad()) 
-                    if (!await settings.tryLoadLegacy())
-                        await settings.reset()
+            setSettings(await Settings.init())
+            let _settings: ISettingsObject = SettingsSchema.defaultObject()
+
+            try {
+                _settings = await Settings.load(settings)
+            } catch {
+                try {
+                    _settings = await Settings.loadLegacy(settings)
+                } catch {
+                    // yeet
+                }
+            }
+
+            setSettings(_settings, "Settings::Changed")
+            // emit("Settings::MainWindow", { settings: settings.Current })
             
             setRecentProjects(settings.Current.RecentProjects)
-        
-            console.log(settings)
+    
         })()
 
         return () => {
-            settings.save()
+            // settings.save()
+        }
+    }, [])
+
+    // tauri om change subscription event
+    let unlisten: UnlistenFn | undefined
+    useEffect(() => {
+        (async () => {
+            unlisten = await listen<{settings: ISettingsObject}>("Settings::OutputModulesChanged", (event) => {
+                console.log("Settings::OutputModulesChanged event received")
+                setSettings(event.payload.settings)
+                Settings.save(settings)
+            })
+        })()
+        return () => {
+            if (unlisten)
+                console.warn("Unsubscribed from Settings::OutputModulesChanged event!")
+            unlisten?.call(null)
         }
     }, [])
 
@@ -49,7 +88,7 @@ export default function App() {
     }
     
     return (
-        <AppContainer colorScheme={colorScheme} componentDefinitions={settings.ComponentDefinitions}>
+        <AppContainer theme={settings.Current.Style}>
             <div style={{ display: "flex", width: "100%", flexWrap: "nowrap", flexDirection: "column", margin: "8px" }}>
                 <div style={{ flex: "0 1" }}>
                     <Card shadow="sm" className="titlebar" data-tauri-drag-region>
@@ -67,6 +106,7 @@ export default function App() {
                                                 const om = WebviewWindow.getByLabel("omeditor")
                                                 console.log(om)
                                                 if (om) om.show()
+                                                // mainViewRef.current?.openOMEditor()
                                             }
                                         },
                                         {
@@ -138,8 +178,9 @@ export default function App() {
                         <div className="chrome">
                             <Button.Group>
                                 <Button variant="subtle" color="blue" onClick={() => {
-                                    setColorScheme((colorScheme) => colorScheme === Theme.Light ? Theme.Dark : Theme.Light)
-                                }}><ColorSchemeIcon size={24} filled respectsTheme alt={colorScheme === Theme.Light} /></Button>
+                                    // setColorScheme((colorScheme) => colorScheme === Theme.Light ? Theme.Dark : Theme.Light)
+                                    setSettings({ ...settings, Current: { ...settings.Current, Style: settings.Current.Style === Theme.Light ? Theme.Dark : Theme.Light } }, "Settings::Changed")
+                                }}><ColorSchemeIcon size={24} filled respectsTheme alt={settings.Current.Style === Theme.Light} /></Button>
                                 <Button variant="subtle" color="blue" onClick={() => {
                                     appWindow.minimize()
                                 }}>
@@ -162,7 +203,7 @@ export default function App() {
                         if (typeof(sender) == "boolean") {
                             setModalOpened(sender as boolean)
                         }
-                    }} />
+                    }} settings={[settings, setSettings]} />
                 </div>
             </div>
         </AppContainer>

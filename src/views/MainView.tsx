@@ -1,4 +1,4 @@
-import { Paper, Title, Button, Card, Text, Modal, Center, Loader, Grid, Overlay, TextInput, Divider } from "@mantine/core"
+import { Paper, Title, Button, Card, Text, Modal, Center, Loader, Grid, Overlay, TextInput, Divider, useMantineTheme } from "@mantine/core"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
 import { SettingsIcon, PlayIcon, QueueIcon, PlusIcon, MinusIcon, } from "../components/Icons/Icons"
 import { useDisclosure } from "@mantine/hooks"
@@ -7,14 +7,17 @@ import {  IAfterEffectsProject, RenderTask } from "../classes/Rendering"
 import { open as openDialog } from "@tauri-apps/api/dialog"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { EditorSender } from "../classes/Helpers/Enums"
-import { settings } from "../classes/Settings"
+import { ISettingsProps, Settings } from "../classes/Settings"
 import ImportView from "./ImportView"
 import { invoke } from "@tauri-apps/api"
-import { useStopwatch, useTimer } from "react-timer-hook"
+import { useStopwatch } from "react-timer-hook"
 import ListView from "../components/ListView/ListView"
 import Expander from "../components/Expander/Expander"
 import EditIcon from "../components/Icons/EditIcon"
 import PathUtils from "../classes/Helpers/Path"
+// import { useSettings } from "../components/SettingsProvider"
+import OutputModuleEditor from "./OutputModuleEditor"
+// import { useSettings } from "../components/SettingsProvider"
 
 interface IDefaultViewProps {
     callback?: (sender: unknown) => void;
@@ -34,20 +37,23 @@ function useDisclosureObject(initialState: boolean, callbacks?: { onOpen?(): voi
     }
 }
 
-const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef) => {
+const MainView = forwardRef<TMainViewHandle, IDefaultViewProps & ISettingsProps>((props, thisRef) => {
     const dialogs = {
         taskEditor: useDisclosureObject(false),
-        importProject: useDisclosureObject(false),
+        importProject: useDisclosureObject(false)
     }
 
-    let [editorSender, setEditorSender] = useState<EditorSender>(EditorSender.TaskCreateButton)
-    let [TempRenderTask, setTempRenderTask] = useState(new RenderTask(""))
-    let [page, setCurrentPage] = useState(0)
-    let [renderTasks, setRenderTasks] = useState<RenderTask[]>([])
-    let [isWaiting, setIsWaiting] = useState(false)
-    let [projectImportState, setProjectImportState] = useState(false)
-    let [importTimeElapsed, setImportTimeElapsed] = useState(0)
-    let [parsedProject, setParsedProject] = useState<{path: string, project?: IAfterEffectsProject[]}>({ path: "", project: undefined })
+    let [settings, setSettings] = props.settings,
+        [editorSender, setEditorSender] = useState<EditorSender>(EditorSender.TaskCreateButton),
+        [TempRenderTask, setTempRenderTask] = useState(Settings.createDefaultRenderTask(settings, "")),
+        [page, setCurrentPage] = useState(0),
+        [renderTasks, setRenderTasks] = useState<RenderTask[]>([]),
+        [isWaiting, setIsWaiting] = useState(false),
+        [projectImportState, setProjectImportState] = useState(false),
+        [importTimeElapsed, setImportTimeElapsed] = useState(0),
+        [parsedProject, setParsedProject] = useState<{path: string, project?: IAfterEffectsProject[]}>({ path: "", project: undefined }),
+        theme = useMantineTheme()
+
 
     const LoadingProject = <>
         <Title order={4}>Loading project...</Title>
@@ -69,10 +75,6 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
             sw.pause()
         }
     }, [sw])
-
-    useEffect(() => {
-        console.log(renderTasks)
-    }, [renderTasks])
 
     async function newTask() {
         setProjectImportState(false)
@@ -121,19 +123,19 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
             <ContentProvider
                 Header={
                     <Card shadow="sm" style={{ display: "flex", alignItems: "center", padding: "8px" }}>
-                        <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }}>Tasks</Title>
+                        <Title order={4} style={{ fontWeight: "bold", marginLeft: "8px" }} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>Tasks</Title>
                         <div style={{ display: "flex", width: "100%", justifyContent: "right", gap: "0 8px" }}>
                             {/* <Button variant={ isWaiting ? "filled" : "default" } size="sm" onClick={() => {
                                 setIsWaiting(!isWaiting)
                             }}>Toggle loading overlay</Button>*/}
-                            <Button variant="default" size="sm" onClick={ async () => {
+                            {/* <Button variant="default" size="sm" onClick={ async () => {
                                 await settings.init()
                                 if (!settings.isLoaded) 
                                     if (!await settings.tryLoad()) 
                                         if (!await settings.tryLoadLegacy())
-                                            await settings.reset()
-                                console.log(settings)
-                            }}>Load settings</Button> 
+                                            await settings.save()
+                                setSettings(settings)
+                            }}>Load settings</Button>  */}
                             <Button variant="default" size="sm" leftIcon={<PlusIcon size={16} filled respectsTheme />} onClick={newTask}>New Task</Button>
                             {/* <Button variant="default" size="sm" leftIcon={<MinusIcon size={16} filled respectsTheme />}>Remove Task</Button> */}
                         </div>
@@ -210,7 +212,7 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
 
                             props.callback?.call(null, false)
                             dialogs.taskEditor.close()
-                        }} />
+                        }} settings={[settings, setSettings]} />
                     </Modal.Body>
                 </Modal.Content>
             </Modal.Root>
@@ -246,11 +248,10 @@ const MainView = forwardRef<TMainViewHandle, IDefaultViewProps>((props, thisRef)
                             
                             props.callback?.call(null, false)
                             dialogs.importProject.close()
-                        }} />
+                        }} settings={[settings, setSettings]} />
                     </Modal.Body>
                 </Modal.Content>
             </Modal.Root>
-
         </>
     )
 })

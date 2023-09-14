@@ -4,6 +4,8 @@ import ContentProvider from "../components/ContentProvider/ContentProvider"
 import { Card, Paper, Title, TextInput, Button, Text, Divider, ColorSwatch } from "@mantine/core"
 import SplitView from "../components/SplitView/SplitView"
 import ListBox, { IListBoxProps, TListBoxSelectionHandle } from "../components/ListBox/ListBox"
+import { ISettingsProps, Settings } from "../classes/Settings"
+// import { useSettings } from "../components/SettingsProvider"
 
 interface IImportViewProps {
     path: string
@@ -11,17 +13,18 @@ interface IImportViewProps {
     callback?: (Task?: RenderTask) => void
 }
 
-export default function ImportView(props: IImportViewProps): React.JSX.Element {
-    let [textObj, setTextObj] = useState({
-        name: "",
-        resolution: "",
-        framerate: "",
-        startFrame: "",
-        endFrame: "",
-        backgroundColor: ""
-    })
-    let [checkedComps, setCheckedComps] = useState<IAfterEffectsProject[]>([])
-    let listBoxRef = useRef<TListBoxSelectionHandle>(null)
+export default function ImportView(props: IImportViewProps & ISettingsProps): React.JSX.Element {
+    let [settings, setSettings] = props.settings,
+        [textObj, setTextObj] = useState({
+            name: "",
+            resolution: "",
+            framerate: "",
+            startFrame: "",
+            endFrame: "",
+            backgroundColor: ""
+        }),
+        [checkedComps, setCheckedComps] = useState<IAfterEffectsProject[]>([]),
+        listBoxRef = useRef<TListBoxSelectionHandle>(null)
 
     return (
         <Card className="popup">
@@ -99,7 +102,7 @@ export default function ImportView(props: IImportViewProps): React.JSX.Element {
                             props.callback?.call(null, undefined)
                         }}>Cancel</Button>
                         <Button variant="filled" color="blue" style={{ marginLeft: "8px" }} disabled={checkedComps.length == 0} onClick={() => {
-                            let task = new RenderTask(props.path)
+                            let task = Settings.createDefaultRenderTask(settings, props.path)
                             task.Compositions = checkedComps.map((item) => new Composition(item.name, new FrameSpan(item.frames[0], item.frames[1]), 1))
                             props.callback?.call(null, task)
                         }}>Import</Button>

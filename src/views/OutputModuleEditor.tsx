@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { appWindow, getCurrent as getCurrentWindow } from "@tauri-apps/api/window"
+import { getCurrent as getCurrentWindow } from "@tauri-apps/api/window"
 import AppContainer from "../components/AppContainer"
-// import { settings } from "../classes/Settings"
 import { Button, Card, Group, Modal, Paper, Tabs, TextInput, Textarea, Title } from "@mantine/core"
 import { CloseIcon, ExpandIcon, MinimizeIcon, MinusIcon, PlusIcon } from "../components/Icons/Icons"
 import ContentProvider from "../components/ContentProvider/ContentProvider"
@@ -9,23 +8,31 @@ import SplitView from "../components/SplitView/SplitView"
 import ListBox, { TListBoxSelectionHandle } from "../components/ListBox/ListBox"
 import { OutputModule } from "../classes/Rendering"
 import CircleIcon from "../components/Icons/CircleIcon"
-import { confirm } from "@tauri-apps/api/dialog"
 import { useDisclosure } from "@mantine/hooks"
 import useStateCallback from "../classes/useStateCallback"
-import { useSettings } from "../components/SettingsProvider"
+import { ILauncherConfig, ISettingsObject, Settings, SettingsSchema } from "../classes/Settings"
+// import { useSettings } from "../components/SettingsProvider"
+import { UnlistenFn, emit, listen } from "@tauri-apps/api/event"
 
 // getCurrentWindow().hide()
 export default function OutputModuleEditor(): React.JSX.Element {
     const thisWindow = getCurrentWindow()
 
-    let [isWindowMaximized, setIsWindowMaximized] = useState(false),
-        settings = useSettings(),
-        [currentOMs, setCurrentOMs] = useStateCallback(settings.Current.OutputModules.Modules),
+    let [settings, _setSettings] = useState(SettingsSchema.defaultObject()),
+        [isWindowMaximized, setIsWindowMaximized] = useState(false),
+        [currentOMs, setCurrentOMs] = useStateCallback(new Array<OutputModule>()),
         [selectedOM, setSelectedOM] = useState<OutputModule>(),
         [omAlreadyExists, setOmAlreadyExists] = useState(false),
         listBoxRef = useRef<TListBoxSelectionHandle>(null),
         [winDocEdited, setWinDocEdited] = useState(false),
         [opened, {open, close}] = useDisclosure()
+
+    const setSettings = (action: React.SetStateAction<ISettingsObject>, emitEvent?: string) => {
+        _setSettings(action)
+        if (emitEvent)
+            emit(emitEvent, { settings: settings.Current })
+        console.debug("App.tsx :: Settings state changed", settings.Current)
+    }
 
     thisWindow.onResized(async () => {
         setIsWindowMaximized(await thisWindow.isMaximized())
@@ -50,6 +57,28 @@ export default function OutputModuleEditor(): React.JSX.Element {
             omMaskRef.current.style.fontFamily = "monospace"
     }, [])
 
+    useEffect(() => {
+        console.log(settings.Current)
+    }, [settings])
+
+    // tauri om change subscription event
+    
+    useEffect(() => {
+        let unlistenChanged: UnlistenFn | undefined
+        (async () => {
+            unlistenChanged = await listen<{settings: ISettingsObject}>("Settings::Changed", (event) => {
+                console.log("Settings::Changed event received")
+                setSettings(event.payload.settings)
+            })
+        })()
+        return () => {
+            if (unlistenChanged)
+                console.warn("Unsubscribed from Settings::OutputModulesChanged event!")
+            unlistenChanged?.call(null)
+        }
+    }, [])
+
+
     function generateButtons(source: string[]): React.JSX.Element {
         return (
             <div className="flex">
@@ -70,13 +99,19 @@ export default function OutputModuleEditor(): React.JSX.Element {
     }
 
     function saveBtnClick(): void {
+        let result: OutputModule[] = []
+        // recast everything to OM
+        for (let om of currentOMs)
+            result.push(new OutputModule(om.Module, om.Mask, om.IsImported))
+        
         setSelectedOM(settings.Current.OutputModules.Modules[0])
         listBoxRef.current?.select(0)
         // TODO: changing settings here does not change them everywhere
         // despite the variable being the same throughout the app
-        settings.Current.OutputModules.Modules = currentOMs
-        console.log(settings.Current.OutputModules.Modules)
-        settings.save()
+        setSettings({ ...settings, Current: { ...settings.Current, OutputModules: {...settings.Current.OutputModules, Modules: result } } }, "Settings::OutputModulesChanged")
+        // settings.save()
+        // mainViewRef.current?.reload()
+        // emit("Settings::ChildrenWindows", { settings: settings.Current })
         close()
         thisWindow.hide()
     }
@@ -89,7 +124,7 @@ export default function OutputModuleEditor(): React.JSX.Element {
     }
 
     return (
-        <AppContainer colorScheme={settings.colorScheme} componentDefinitions={settings.ComponentDefinitions}>
+        <AppContainer theme={settings.Current.Style}>
             <ContentProvider style={{ width: "100%", padding: "8px" }}
                 Header={
                     <Card shadow="sm" data-tauri-drag-region style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px" }}>
@@ -140,10 +175,8 @@ export default function OutputModuleEditor(): React.JSX.Element {
                                 <div style={{ height: "100%" }}>
                                     <ListBox 
                                         ref={listBoxRef}
-                                        items={currentOMs.map((item) => item.Module)} 
+                                        items={settings.Current.OutputModules.Modules.map((item) => item.Module)} 
                                         onSelectionChange={(index) => {
-                                            console.log("selection event fired", index)
-                                            console.log("currentOMs", currentOMs)
                                             setSelectedOM(currentOMs[index])
                                             // listBoxRef.current?.select(index)
                                         }}
